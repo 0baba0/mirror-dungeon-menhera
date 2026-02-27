@@ -1,0 +1,57 @@
+---
+// web_site/src/pages/index.astro
+import { getCollection } from 'astro:content';
+
+// 'characters' 폴더 안에 있는 모든 JSON 데이터를 비동기로 불러옵니다.
+const characters = await getCollection('characters');
+---
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>림버스 컴퍼니 도감</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #1e1e1e;
+        color: #f5f5f5;
+        padding: 2rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+      .card {
+        background-color: #2b2b2b;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+      .card img {
+        max-width: 100%;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+      }
+      h2 { margin: 0 0 0.5rem 0; color: #ffca28; }
+      p { margin: 0.25rem 0; font-size: 0.9rem; color: #ccc; }
+    </style>
+  </head>
+  <body>
+    <h1>림버스 컴퍼니 수감자 도감</h1>
+    
+    <div class="grid">
+      {characters.map((char) => (
+        <div class="card">
+          <img src={char.data.image_url} alt={char.data.name} />
+          <h2>{char.data.name}</h2>
+          <p><strong>소속:</strong> {char.data.affiliation}</p>
+          <p><strong>무기:</strong> {char.data.weapon}</p>
+        </div>
+      ))}
+    </div>
+  </body>
+</html>
