@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772254381_6",
+  "characterName": "뫼르소",
+  "identityName": "R사 제 4무리 코뿔소팀",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-07-13",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈",
+    "충전"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "질투"
+  },
+  "affiliation": [
+    "R사"
+  ],
+  "image_url": "/images/characters/auto_img_1772254381_6.webp?v=1772261894"
+}

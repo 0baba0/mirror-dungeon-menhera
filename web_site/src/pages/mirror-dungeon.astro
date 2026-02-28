@@ -39,9 +39,9 @@ const groupedCharacters = sinnerNames.map(name => {
         text-decoration: none;
       }
       .logo-img {
-        height: 40px; /* 로고 크기는 여기서 조절하세요 */
+        height: 40px; 
         width: auto;
-        border-radius: 50%; /* 로고를 동그랗게 깎아줍니다 */
+        border-radius: 50%; 
         box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
       }
       .logo-text {
@@ -53,36 +53,53 @@ const groupedCharacters = sinnerNames.map(name => {
         background: #111; border-bottom: 1px solid #333;
         padding: 1rem 2rem; display: flex; align-items: center;
       }
-      .logo {
-        color: #eab308; font-size: 1.5rem; font-weight: 900;
-        text-decoration: none; letter-spacing: 1px;
-      }
 
-      /* 🚀 한 줄에 6개가 예쁘게 들어가도록 가로 넓이를 1800px로 대폭 늘렸습니다 */
       .container { 
         max-width: 1800px; 
-        margin: 0 auto; padding: 3rem 1.5rem; flex: 1; width: 100%; box-sizing: border-box;
+        margin: 0 auto; padding: 2rem 1.5rem; flex: 1; width: 100%; box-sizing: border-box;
       }
       .page-title { text-align: center; color: #fff; font-size: 2rem; margin-bottom: 0.5rem; }
-      .page-subtitle { text-align: center; color: #888; margin-bottom: 3rem; }
+      .page-subtitle { text-align: center; color: #888; margin-bottom: 2rem; }
       
-      /* 🚀 핵심: 무조건 6칸(1fr)으로 쪼개도록 강제 설정했습니다 */
+      /* 🚀 위아래로 배치되는 메인 레이아웃 */
+      .main-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      /* 🚀 상단: 덱 현황판 대시보드 (스크롤 고정) */
+      .deck-summary-area {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(17, 17, 17, 0.95);
+        backdrop-filter: blur(8px);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid #333;
+        border-bottom: 2px solid #eab308;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+
+      /* 🚀 하단: 캐릭터 목록 영역 */
+      .character-list-area {
+        width: 100%;
+      }
+
+      /* 🚀 시원한 6칸 꽉 채우기 황금비율! */
       .character-grid {
         display: grid; 
         grid-template-columns: repeat(6, 1fr); 
         gap: 1.5rem; 
       }
 
-      /* 모니터가 작거나 모바일 화면일 때 카드가 찌그러지지 않게 3칸/2칸으로 자동 조정되는 방어 코드 */
-      @media (max-width: 1400px) {
-        .character-grid { grid-template-columns: repeat(4, 1fr); }
-      }
-      @media (max-width: 900px) {
-        .character-grid { grid-template-columns: repeat(3, 1fr); }
-      }
-      @media (max-width: 600px) {
-        .character-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      }
+      /* 반응형: 화면이 작아지면 카드 칸 수 조절 */
+      @media (max-width: 1600px) { .character-grid { grid-template-columns: repeat(5, 1fr); } }
+      @media (max-width: 1300px) { .character-grid { grid-template-columns: repeat(4, 1fr); } }
+      @media (max-width: 1000px) { .character-grid { grid-template-columns: repeat(3, 1fr); } }
+      @media (max-width: 700px) { .character-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
 
       .empty-slot {
         display: flex; flex-direction: column; gap: 1rem;
@@ -95,47 +112,25 @@ const groupedCharacters = sinnerNames.map(name => {
         background: #0f0f0f; border-radius: 8px; color: #444; font-weight: bold; min-height: 350px; text-align: center;
       }
 
-      /* 🚀 새 푸터 디자인 (왼쪽 정렬, 깔끔한 구분) */
+      /* 푸터 디자인 (이 부분은 건드리지 않고 그대로 유지합니다!) */
       .site-footer { 
-        background: #0a0a0a; 
-        border-top: 1px solid #222; 
-        padding: 3rem 2rem; 
-        margin-top: 4rem;
-        color: #888;
+        background: #0a0a0a; border-top: 1px solid #222; padding: 3rem 2rem; margin-top: 4rem; color: #888;
       }
       .footer-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        text-align: left;
+        max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.4rem; text-align: left;
       }
-      .footer-title {
-        color: #eab308;
-        font-size: 1.2rem;
-        margin: 0 0 0.5rem 0;
-      }
-      .site-footer p { 
-        margin: 0; 
-        font-size: 0.85rem; 
-        line-height: 1.6;
-      }
-      .contact-info a {
-        color: #aaa;
-        text-decoration: underline;
-      }
-      .contact-info a:hover {
-        color: #eab308;
-      }
-      .copyright {
-        margin-top: 1.5rem !important;
-      }
-      .version-info {
-        margin-top: 1rem;
-        border-top: 1px solid #222;
-        padding-top: 1rem;
-      }
+      .footer-title { color: #eab308; font-size: 1.2rem; margin: 0 0 0.5rem 0; }
+      .site-footer p { margin: 0; font-size: 0.85rem; line-height: 1.6; }
+      .contact-info a { color: #aaa; text-decoration: underline; }
+      .contact-info a:hover { color: #eab308; }
+      .copyright { margin-top: 1.5rem !important; }
+      .version-info { margin-top: 1rem; border-top: 1px solid #222; padding-top: 1rem; }
+
+      /* 🚀 요기 아래 4줄만 :global() 이 씌워졌습니다! */
+      :global(.support-panel) { flex: 1; text-align: center; padding-left: 1rem; position: relative; cursor: pointer; }
+      :global(.support-panel:hover .support-tooltip) { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+      :global(.support-tooltip) { visibility: hidden; opacity: 0; position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(-10px); margin-top: 1.5rem; background: #151515; border: 1px solid #444; border-radius: 8px; padding: 1.2rem; width: max-content; min-width: 250px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); transition: all 0.2s ease-out; z-index: 200; text-align: left; }
+      :global(.support-tooltip::before) { content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 12px; height: 12px; background: #151515; border-top: 1px solid #444; border-left: 1px solid #444; }
     </style>
   </head>
   <body>
@@ -150,17 +145,31 @@ const groupedCharacters = sinnerNames.map(name => {
       <h1 class="page-title">거울던전 편성</h1>
       <p class="page-subtitle">수집된 총 인격 데이터: {allCharacters.length}개</p>
       
-      <div class="character-grid">
-        {groupedCharacters.map(group => (
-          group.identities.length > 0 ? (
-            <SinnerGroup name={group.name} identities={group.identities} />
-          ) : (
-            <div class="empty-slot">
-              <h3>{group.name}</h3>
-              <div class="empty-box">데이터<br>수집 중...</div>
-            </div>
-          )
-        ))}
+      <div class="main-layout">
+        
+        <div class="deck-summary-area">
+          <div id="deck-status">
+            <p style="color: #888; text-align: center; margin: 0; font-size: 1.1rem;">
+              수감자 카드를 <b style="color:#eab308;">우클릭</b>하여 순서대로 편성해 주세요.
+            </p>
+          </div>
+        </div>
+
+        <div class="character-list-area">
+          <div class="character-grid">
+            {groupedCharacters.map(group => (
+              group.identities.length > 0 ? (
+                <SinnerGroup name={group.name} identities={group.identities} />
+              ) : (
+                <div class="empty-slot">
+                  <h3>{group.name}</h3>
+                  <div class="empty-box">데이터<br>수집 중...</div>
+                </div>
+              )
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -174,10 +183,133 @@ const groupedCharacters = sinnerNames.map(name => {
         <p class="copyright">© 2026 거울던전 멘헤라</p>
         
         <div class="version-info">
-          <p>2026.02.28 Ver.Astro 1.0.0</p>
+          <p>2026.02.28 Ver.Astro 0.1.0-prototype</p>
           <p>거울던전 멘헤라는 프로젝트문 공식 서비스가 아니며, 사용된 모든 게임 아트워크, 정보, 애셋의 권리와 저작권은 해당 저작권자(<b>Project Moon</b>)의 소유입니다.</p>
         </div>
       </div>
     </footer>
+
+    <script>
+      let deck = [];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // 1. 우클릭 시 덱에 넣고 빼기
+        document.addEventListener('contextmenu', (e) => {
+          const container = e.target.closest('.cards-container');
+          if (!container) return;
+          
+          e.preventDefault(); 
+
+          const sinnerGroup = container.closest('.sinner-group');
+          const sinnerName = sinnerGroup.getAttribute('data-sinner');
+
+          const index = deck.indexOf(sinnerName);
+          if (index > -1) {
+            deck.splice(index, 1); // 이미 있으면 뺌
+          } else {
+            if (deck.length >= 12) {
+              alert("거울던전 편성은 최대 12명까지만 가능합니다!");
+              return;
+            }
+            deck.push(sinnerName); // 없으면 넣음
+          }
+
+          updateDeckUI();
+        });
+
+        // 2. 누군가 팝업에서 인격을 바꾸면 즉시 현황판 다시 그리기
+        document.addEventListener('deck-updated', () => {
+          updateDeckUI();
+        });
+      });
+
+      // 🔄 UI 업데이트 엔진 (누적 합계 & 툴팁 지원)
+      function updateDeckUI() {
+        const statusDiv = document.getElementById('deck-status');
+        let activeKeywords = {}; 
+        let cumulativeKeywords = {}; 
+        let tooltipHTML = ''; 
+
+        const renderKeywords = (kwObj, alignCenter = false) => {
+          let html = `<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: ${alignCenter ? 'center' : 'flex-start'};">`;
+          const entries = Object.entries(kwObj).sort((a, b) => b[1] - a[1]);
+          if (entries.length === 0) return '<span style="color:#555; font-size:0.9rem;">보유 키워드 없음</span>';
+          
+          entries.forEach(([kw, count]) => {
+            html += `<span style="background: #222; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.9rem; border: 1px solid #444; color: #eee;">${kw} <b style="color:#eab308; margin-left:0.3rem;">${count}</b></span>`;
+          });
+          html += '</div>';
+          return html;
+        };
+
+        document.querySelectorAll('.deck-order-badge').forEach(badge => badge.classList.add('hidden'));
+
+        if (deck.length === 0) {
+          statusDiv.innerHTML = '<p style="color: #888; text-align: center; margin: 0; font-size: 1.1rem;">수감자 카드를 <b style="color:#eab308;">우클릭</b>하여 순서대로 편성해 주세요.</p>';
+          return;
+        }
+
+        deck.forEach((sinnerName, index) => {
+          const order = index + 1;
+          const isSupport = order > 7;
+
+          const groupElement = document.querySelector(`.sinner-group[data-sinner="${sinnerName}"]`);
+          if (!groupElement) return;
+
+          const badge = groupElement.querySelector('.deck-order-badge');
+          if (badge) {
+            badge.innerText = order;
+            badge.classList.remove('hidden');
+            badge.style.background = isSupport ? '#555' : '#eab308';
+            badge.style.color = isSupport ? '#ccc' : '#000';
+          }
+
+          const activeCard = groupElement.querySelector('.card-wrapper.active');
+          if (activeCard) {
+            const keywordsStr = activeCard.getAttribute('data-keywords');
+            if (keywordsStr) {
+              const keywords = keywordsStr.split(',').filter(k => k.trim() !== '');
+              keywords.forEach(kw => {
+                cumulativeKeywords[kw] = (cumulativeKeywords[kw] || 0) + 1; 
+                if (order <= 7) {
+                  activeKeywords[kw] = (activeKeywords[kw] || 0) + 1; 
+                }
+              });
+            }
+          }
+
+          if (order >= 8) {
+            tooltipHTML += `
+              <div style="margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.8rem;">
+                <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <b style="color:#eab308;">${order}명</b> 편성 시 <span style="color:#666; font-size:0.75rem;">(1~${order}번 누적 합계)</span>
+                </div>
+                ${renderKeywords(cumulativeKeywords, false)}
+              </div>
+            `;
+          }
+        });
+
+        let finalHTML = `
+          <div style="display: flex; width: 100%; justify-content: center; align-items: flex-start; gap: 1rem;">
+            <div style="flex: 1; text-align: center; border-right: 1px solid #333; padding-right: 1rem;">
+              <h3 style="color: #fff; margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem;">⚔️ 기본 편성 누적 <span style="color:#888; font-size:0.9rem;">(최대 7명)</span></h3>
+              ${renderKeywords(activeKeywords, true)}
+            </div>
+            <div class="support-panel">
+              <h3 style="color: #aaa; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.1rem;">
+                🪑 8인 이상 확장 편성 <span style="font-size: 0.75rem; background: #333; padding: 0.2rem 0.5rem; border-radius: 4px; color: #eab308; margin-left: 0.5rem; vertical-align: middle;">🔍 마우스 오버</span>
+              </h3>
+              <p style="color: #666; font-size: 0.85rem; margin: 0;">마우스를 올려 8~12명 편성 시의 <b>누적 합계</b>를 확인하세요.</p>
+              <div class="support-tooltip">
+                ${deck.length > 7 ? tooltipHTML : '<div style="color:#555; text-align:center;">8명 이상 편성 시 정보가 표시됩니다.</div>'}
+              </div>
+            </div>
+          </div>
+        `;
+
+        statusDiv.innerHTML = finalHTML;
+      }
+    </script>
   </body>
 </html>

@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772254293_6",
+  "characterName": "료슈",
+  "identityName": "흑운회 와카슈",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "색욕"
+  },
+  "affiliation": [
+    "조직",
+    "흑운회"
+  ],
+  "image_url": "/images/characters/auto_img_1772254293_6.webp?v=1772261400"
+}

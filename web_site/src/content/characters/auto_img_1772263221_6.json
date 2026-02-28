@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772263221_6",
+  "characterName": "로쟈",
+  "identityName": "남부 츠바이 협회 5과",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-07-13",
+  "imagePosition": "center",
+  "keywords": [
+    "호흡"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "분노"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "분노"
+  },
+  "affiliation": [
+    "해결사",
+    "츠바이 협회"
+  ],
+  "image_url": "/images/characters/auto_img_1772263221_6.webp?v=1772266951"
+}

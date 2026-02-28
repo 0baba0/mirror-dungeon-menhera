@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772263950_6",
+  "characterName": "오티스",
+  "identityName": "남부 섕크 협회 4과",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-12-21",
+  "imagePosition": "center",
+  "keywords": [
+    "호흡"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "오만"
+  },
+  "affiliation": [
+    "해결사",
+    "섕크 협회"
+  ],
+  "image_url": "/images/characters/auto_img_1772263950_6.webp?v=1772267631"
+}

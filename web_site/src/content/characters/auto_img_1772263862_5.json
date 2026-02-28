@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772263862_5",
+  "characterName": "오티스",
+  "identityName": "LCB 수감자",
+  "isDefault": true,
+  "grade": 1,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "나태"
+  },
+  "affiliation": [
+    "림버스 컴퍼니",
+    "LCB"
+  ],
+  "image_url": "/images/characters/auto_img_1772263862_5.webp?v=1772267529"
+}

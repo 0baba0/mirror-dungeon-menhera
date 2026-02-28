@@ -1,0 +1,47 @@
+{
+  "id": "auto_img_1772254464_6",
+  "characterName": "홍루",
+  "identityName": "남부 리우 협회 5과",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-04-06",
+  "imagePosition": "center",
+  "keywords": [
+    "화상"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "우울"
+  },
+  "affiliation": [
+    "해결사",
+    "리우 협회"
+  ],
+  "image_url": "/images/characters/auto_img_1772254464_6.webp?v=1772262152"
+}
