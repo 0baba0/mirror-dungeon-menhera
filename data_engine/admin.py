@@ -46,22 +46,35 @@ def serve_temp_image(filename):
 def index():
     images = sorted([f for f in os.listdir(IMAGE_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     
-    # URL에 page 번호가 없을 때 (처음 접속하거나 새로고침 했을 때)
+    # URL에 page 번호가 없을 때 (스마트 이어하기)
     if 'page' not in request.args:
-        # [수정된 부분] 기본값을 0이 아니라 '모든 작업 완료 상태(전체 이미지 개수)'로 설정합니다.
         target_page = len(images) 
-        
         for i, img in enumerate(images):
             char_id = os.path.splitext(img)[0]
             if not os.path.exists(os.path.join(JSON_DIR, f"{char_id}.json")):
-                target_page = i # 작업 안 한 빈 곳을 찾으면 거기로 이동!
+                target_page = i
                 break
-                
         return redirect(url_for('index', page=target_page))
 
-    page = int(request.args.get('page', 0))
+    # 🚀 빈칸이나 이상한 문자가 들어오면 무조건 0(처음)으로 처리하는 방어 로직
+    page_str = request.args.get('page', '0')
+    page = int(page_str) if page_str.isdigit() else 0
+    if page < 0: page = 0
     
-    # target_page가 전체 이미지 개수와 같아지면 이 축하 화면이 뜹니다!
+    # 🚀 신규: 드롭다운 검색을 위한 전체 데이터 목록 생성
+    search_list = []
+    for i, img in enumerate(images):
+        char_id = os.path.splitext(img)[0]
+        json_path = os.path.join(JSON_DIR, f"{char_id}.json")
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                j_data = json.load(f)
+                display_name = f"[{j_data.get('identityName', '이름없음')}] {j_data.get('characterName', '')}"
+        else:
+            display_name = "(미입력 데이터)"
+        search_list.append({"page": i, "name": display_name})
+
+    # 모든 작업 완료 시
     if page >= len(images):
         return f"""
         <div style="font-family:sans-serif; background:#121212; color:#fff; padding:3rem; text-align:center;">
@@ -82,7 +95,8 @@ def index():
         with open(json_path, 'r', encoding='utf-8') as f:
             existing_data = json.load(f)
             
-    return render_template('index.html', image=current_image, char_id=char_id, page=page, total=len(images), data=existing_data)
+    # search_list를 화면으로 같이 넘겨줍니다
+    return render_template('index.html', image=current_image, char_id=char_id, page=page, total=len(images), data=existing_data, search_list=search_list)
 
 @app.route('/save', methods=['POST'])
 def save():
@@ -103,6 +117,7 @@ def save():
         "isDefault": request.form.get('isDefault') == 'on',
         "grade": int(request.form['grade']),
         "releaseDate": request.form['releaseDate'],
+        "imagePosition": request.form.get('imagePosition', 'center'),
         "keywords": final_keywords,
         "skills": {
             "skill1": {"type": request.form['skill1_type'], "attribute": request.form['skill1_attr']},

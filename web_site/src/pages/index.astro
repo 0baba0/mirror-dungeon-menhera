@@ -1,57 +1,144 @@
 ---
 // web_site/src/pages/index.astro
-import { getCollection } from 'astro:content';
-
-// 'characters' 폴더 안에 있는 모든 JSON 데이터를 비동기로 불러옵니다.
-const characters = await getCollection('characters');
 ---
 
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>림버스 컴퍼니 도감</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>거울던전 멘헤라 | 메인</title>
     <style>
       body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #1e1e1e;
-        color: #f5f5f5;
-        padding: 2rem;
+        margin: 0; font-family: 'Pretendard', sans-serif;
+        background-color: #0a0a0a; color: #f5f5f5;
+        display: flex; flex-direction: column; min-height: 100vh;
       }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
+
+      .logo-wrapper {
+        display: flex; align-items: center; gap: 0.8rem;
+        text-decoration: none;
       }
-      .card {
-        background-color: #2b2b2b;
-        border: 1px solid #444;
-        border-radius: 8px;
-        padding: 1rem;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      .logo-img {
+        height: 40px; /* 로고 크기는 여기서 조절하세요 */
+        width: auto;
+        border-radius: 50%; /* 로고를 동그랗게 깎아줍니다 */
+        box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
       }
-      .card img {
-        max-width: 100%;
-        border-radius: 4px;
-        margin-bottom: 1rem;
+      .logo-text {
+        color: #eab308; font-size: 1.5rem; font-weight: 900;
+        letter-spacing: 1px;
       }
-      h2 { margin: 0 0 0.5rem 0; color: #ffca28; }
-      p { margin: 0.25rem 0; font-size: 0.9rem; color: #ccc; }
+      
+      /* 상단 네비게이션 바 */
+      .top-nav {
+        background: #111; border-bottom: 1px solid #333;
+        padding: 1rem 2rem; display: flex; align-items: center;
+      }
+      .logo {
+        color: #eab308; font-size: 1.5rem; font-weight: 900;
+        text-decoration: none; letter-spacing: 1px;
+      }
+
+      /* 메인 콘텐츠 영역 (화면 중앙 정렬) */
+      .hero-section {
+        flex: 1; display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        text-align: center; padding: 2rem;
+      }
+      .hero-title {
+        font-size: 4rem; color: #fff; margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+      }
+      .hero-subtitle {
+        font-size: 1.2rem; color: #aaa; margin-bottom: 4rem;
+      }
+
+      /* 거울던전 입장 버튼 */
+      .btn-enter {
+        display: inline-block; padding: 1.5rem 4rem;
+        background: linear-gradient(135deg, #eab308 0%, #a16207 100%);
+        color: #000; font-size: 1.5rem; font-weight: 900;
+        text-decoration: none; border-radius: 8px;
+        transition: 0.3s; border: 2px solid #fef08a;
+        box-shadow: 0 10px 30px rgba(234, 179, 8, 0.4);
+      }
+      .btn-enter:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(234, 179, 8, 0.6);
+      }
+
+      /* 🚀 새 푸터 디자인 (왼쪽 정렬, 깔끔한 구분) */
+      .site-footer { 
+        background: #0a0a0a; 
+        border-top: 1px solid #222; 
+        padding: 3rem 2rem; 
+        margin-top: 4rem;
+        color: #888;
+      }
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        text-align: left;
+      }
+      .footer-title {
+        color: #eab308;
+        font-size: 1.2rem;
+        margin: 0 0 0.5rem 0;
+      }
+      .site-footer p { 
+        margin: 0; 
+        font-size: 0.85rem; 
+        line-height: 1.6;
+      }
+      .contact-info a {
+        color: #aaa;
+        text-decoration: underline;
+      }
+      .contact-info a:hover {
+        color: #eab308;
+      }
+      .copyright {
+        margin-top: 1.5rem !important;
+      }
+      .version-info {
+        margin-top: 1rem;
+        border-top: 1px solid #222;
+        padding-top: 1rem;
+      }
     </style>
   </head>
   <body>
-    <h1>림버스 컴퍼니 수감자 도감</h1>
-    
-    <div class="grid">
-      {characters.map((char) => (
-        <div class="card">
-          <img src={char.data.image_url} alt={char.data.name} />
-          <h2>{char.data.name}</h2>
-          <p><strong>소속:</strong> {char.data.affiliation}</p>
-          <p><strong>무기:</strong> {char.data.weapon}</p>
+    <header class="top-nav">
+      <a href="/" class="logo-wrapper">
+        <img src="/logo.png" alt="로고" class="logo-img" />
+        <span class="logo-text">거울던전 멘헤라</span>
+      </a>
+    </header>
+
+    <main class="hero-section">
+      <h1 class="hero-title">거울던전 멘헤라</h1>
+      <p class="hero-subtitle">림버스 컴퍼니 비공식 수감자 도감 및 편성 시뮬레이터</p>
+      
+      <a href="/mirror-dungeon" class="btn-enter">거울던전 입장하기 ➔</a>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <h2 class="footer-title">거울던전 멘헤라</h2>
+        <p>림버스 컴퍼니 비공식 수감자 도감 및 편성 시뮬레이터입니다.</p>
+        <p>문의사항이나 버그 제보는 아래 이메일로 연락해주세요.</p>
+        <p class="contact-info">Email: [이메일 주소 입력 예정]</p>
+        
+        <p class="copyright">© 2026 거울던전 멘헤라</p>
+        
+        <div class="version-info">
+          <p>2026.02.28 Ver.Astro 1.0.0</p>
+          <p>거울던전 멘헤라는 프로젝트문 공식 서비스가 아니며, 사용된 모든 게임 아트워크, 정보, 애셋의 권리와 저작권은 해당 저작권자(<b>Project Moon</b>)의 소유입니다.</p>
         </div>
-      ))}
-    </div>
+      </div>
+    </footer>
   </body>
 </html>

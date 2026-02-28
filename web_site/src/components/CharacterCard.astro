@@ -1,0 +1,184 @@
+---
+// web_site/src/components/CharacterCard.astro
+const { character } = Astro.props;
+const { data } = character;
+
+// 림버스 컴퍼니 죄악 속성 공식(유사) 컬러 매핑
+const affinityColors = {
+  '분노': '#b91c1c', // 진홍색
+  '색욕': '#c2410c', // 주황색
+  '나태': '#ca8a04', // 노란색
+  '탐식': '#15803d', // 초록색
+  '우울': '#0369a1', // 파란색
+  '오만': '#1d4ed8', // 남색
+  '질투': '#7e22ce', // 보라색
+  '없음': '#3f3f46'  // 회색
+};
+
+// 등급(Grade)을 별 모양으로 변환 (예: 3 -> ★★★)
+const stars = "★".repeat(data.grade);
+---
+
+<div class="limbus-card">
+  <div class="image-wrapper">
+    <img 
+  src={data.image_url} 
+  alt={data.identityName} 
+  style={`object-position: ${data.imagePosition || 'center'};`} 
+  loading="lazy" 
+/>
+    <div class="gradient-overlay"></div>
+  </div>
+
+  <div class="card-content">
+    <div class="header">
+      <div class="grade">{stars}</div>
+      <div class="names">
+        <span class="identity">[{data.identityName}]</span>
+        <h3 class="character">{data.characterName}</h3>
+      </div>
+    </div>
+
+    <div class="keywords">
+      {data.keywords.map((kw: string) => (
+        <span class="kw-badge">{kw}</span>
+      ))}
+    </div>
+
+    <div class="skills-row">
+      <div class="skill" style={`border-color: ${affinityColors[data.skills.skill1.attribute]}; color: ${affinityColors[data.skills.skill1.attribute]};`}>
+        <span class="skill-num">1</span> {data.skills.skill1.type}
+      </div>
+      <div class="skill" style={`border-color: ${affinityColors[data.skills.skill2.attribute]}; color: ${affinityColors[data.skills.skill2.attribute]};`}>
+        <span class="skill-num">2</span> {data.skills.skill2.type}
+      </div>
+      <div class="skill" style={`border-color: ${affinityColors[data.skills.skill3.attribute]}; color: ${affinityColors[data.skills.skill3.attribute]};`}>
+        <span class="skill-num">3</span> {data.skills.skill3.type}
+      </div>
+      <div class="skill defense" style={`background-color: ${affinityColors[data.defense.attribute]};`}>
+        {data.defense.type}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .limbus-card {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: #121212;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .limbus-card:hover {
+    transform: translateY(-5px);
+    border-color: #eab308;
+    box-shadow: 0 10px 20px rgba(234, 179, 8, 0.2);
+  }
+
+  .image-wrapper {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+  }
+
+  .image-wrapper img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  /* 아래에서 위로 올라오는 검은색 그라데이션 (글씨를 잘 보이게 함) */
+  .gradient-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 70%;
+    background: linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.8) 40%, transparent 100%);
+  }
+
+  .card-content {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%;
+    padding: 1.5rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-sizing: border-box;
+  }
+
+  .header .grade {
+    color: #eab308; /* 황금색 별 */
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0 5px rgba(234, 179, 8, 0.5);
+  }
+
+  .header .names {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header .identity {
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  .header .character {
+    color: #fff;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  .keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .kw-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ddd;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .skills-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .skill {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-bottom: 3px solid; /* 속성 색상으로 칠해질 테두리 */
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px 4px 0 0;
+  }
+
+  .skill-num {
+    opacity: 0.6;
+    font-size: 0.7rem;
+    margin-right: 2px;
+  }
+
+  .defense {
+    border: none;
+    color: #fff !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    border-radius: 4px;
+  }
+</style>

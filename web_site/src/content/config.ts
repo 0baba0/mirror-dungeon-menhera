@@ -10,9 +10,11 @@ const charactersCollection = defineCollection({
     isDefault: z.boolean(),
     grade: z.number(), 
     releaseDate: z.string(),
-    keywords: z.array(z.string()),
     
-    // 공격 유형과 죄악 속성을 묶어서 관리
+    // 🚀 새로 추가된 이미지 포커스 위치
+    imagePosition: z.string().default('center'),
+
+    keywords: z.array(z.string()),
     skills: z.object({
       skill1: z.object({ type: z.string(), attribute: z.string() }),
       skill2: z.object({ type: z.string(), attribute: z.string() }),
@@ -21,10 +23,7 @@ const charactersCollection = defineCollection({
       special2: z.object({ type: z.string(), attribute: z.string() }).optional(),
       special3: z.object({ type: z.string(), attribute: z.string() }).optional(),
     }),
-    
-    // 수비 스킬도 속성을 가질 수 있도록 객체로 변경
     defense: z.object({ type: z.string(), attribute: z.string() }),
-    
     affiliation: z.array(z.string()), 
     image_url: z.string(),
   }),

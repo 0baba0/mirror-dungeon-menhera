@@ -5,9 +5,10 @@
   "isDefault": false,
   "grade": 3,
   "releaseDate": "2023-02-27",
+  "imagePosition": "left",
   "keywords": [
-    "파열",
-    "충전"
+    "충전",
+    "파열"
   ],
   "skills": {
     "skill1": {

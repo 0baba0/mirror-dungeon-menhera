@@ -22,6 +22,11 @@
         .skill-inputs { display: flex; gap: 0.3rem; }
         .kw-badge { display: inline-flex; align-items: center; background: #444; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; color: #fff; font-size: 0.85rem; margin-bottom: 0.3rem;}
         .kw-badge input { margin-right: 0.4rem; }
+        
+        /* 🚀 새로 추가된 커스텀 검색창 디자인 */
+        .search-item { padding: 0.6rem 0.8rem; border-bottom: 1px solid #333; cursor: pointer; font-size: 0.9rem; color: #ccc; transition: 0.1s; }
+        .search-item:hover { background: #eab308; color: #000; font-weight: bold; }
+        .search-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -30,12 +35,32 @@
     </div>
 
     <div class="form-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <div>
-                <a href="/scraper" style="color: #eab308; text-decoration: none; font-weight: bold; font-size: 0.9rem; margin-right: 1rem;">🔍 이미지 수집기 가기 ➔</a>
-                <a href="/cleanup" style="color: #ef4444; text-decoration: none; font-weight: bold; font-size: 0.9rem;" onclick="return confirm('이미지 없이 남겨진 찌꺼기 데이터를 모두 삭제합니다. 진행할까요?');">🧹 무결성 검사(청소) 실행</a>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <a href="/scraper" style="color: #eab308; text-decoration: none; font-size: 0.85rem;">🔍 수집기 가기</a>
+            <a href="/cleanup" style="color: #ef4444; text-decoration: none; font-size: 0.85rem;" onclick="return confirm('찌꺼기 데이터를 청소할까요?');">🧹 데이터 무결성 검사</a>
+        </div>
+
+        <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem; background: #2a2a2a; padding: 1rem; border-radius: 6px; align-items: center;">
+            <a href="{% if page > 0 %}/?page={{ page - 1 }}{% else %}#{% endif %}" 
+               style="text-decoration: none; padding: 0.5rem 0.8rem; background: #444; color: {% if page > 0 %}#fff{% else %}#666{% endif %}; border-radius: 4px; pointer-events: {% if page > 0 %}auto{% else %}none{% endif %}; font-size: 0.9rem; white-space: nowrap;">
+               ◀ 이전
+            </a>
+            
+            <div style="flex: 1; position: relative;">
+                <input type="text" id="custom_search_input" placeholder="🔍 클릭하여 전체보기 또는 타자 쳐서 검색..." 
+                       style="width: 100%; padding: 0.5rem; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box;"
+                       autocomplete="off">
+                
+                <div id="custom_search_dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #1e1e1e; border: 1px solid #444; max-height: 250px; overflow-y: auto; z-index: 1000; border-radius: 0 0 4px 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.8);">
+                    {% for item in search_list %}
+                    <div class="search-item" data-page="{{ item.page }}">
+                        {{ item.page + 1 }}. {{ item.name }}
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-            <div style="color: #888;">진행률: {{ page + 1 }} / {{ total }}</div>
+
+            <div style="color: #888; font-weight: bold; white-space: nowrap; font-size: 0.9rem;">{{ page + 1 }} / {{ total }}</div>
         </div>
 
         <h2>데이터 입력</h2>
@@ -76,6 +101,15 @@
                     <label>출시 날짜</label>
                     <input type="date" name="releaseDate" value="{{ data.releaseDate or '' }}" required>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label style="color: #eab308;">이미지 기준점 (얼굴 위치)</label>
+                <select name="imagePosition">
+                    <option value="left" {% if data.imagePosition == 'left' %}selected{% endif %}>왼쪽</option>
+                    <option value="center" {% if data.imagePosition == 'center' or not data.imagePosition %}selected{% endif %}>가운데 (기본)</option>
+                    <option value="right" {% if data.imagePosition == 'right' %}selected{% endif %}>오른쪽</option>
+                </select>
             </div>
 
             <div class="checkbox-group">
@@ -179,5 +213,48 @@
             <input type="hidden" name="page" value="{{ page }}">
         </form>
     </div>
+
+    <script>
+        const searchInput = document.getElementById('custom_search_input');
+        const searchDropdown = document.getElementById('custom_search_dropdown');
+        const searchItems = document.querySelectorAll('.search-item');
+
+        // 1. 검색창 클릭 시 전체 목록을 예쁘게 펼침
+        searchInput.addEventListener('focus', () => {
+            searchDropdown.style.display = 'block';
+            searchInput.value = ''; // 타이핑 준비
+            searchInput.style.borderColor = '#eab308';
+            searchItems.forEach(item => item.style.display = 'block');
+        });
+
+        // 2. 타이핑할 때마다 목록 실시간 필터링
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            searchDropdown.style.display = 'block'; 
+            searchItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(term)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // 3. 목록 중 하나를 클릭하면 즉시 해당 페이지로 이동
+        searchItems.forEach(item => {
+            // mousedown을 써야 검색창 focus 해제(blur)보다 먼저 클릭이 인식됨
+            item.addEventListener('mousedown', () => { 
+                const page = item.getAttribute('data-page');
+                window.location.href = '/?page=' + page;
+            });
+        });
+
+        // 4. 검색창 바깥을 누르면 목록 닫기
+        searchInput.addEventListener('blur', () => {
+            searchDropdown.style.display = 'none';
+            searchInput.style.borderColor = '#444';
+        });
+    </script>
 </body>
 </html>

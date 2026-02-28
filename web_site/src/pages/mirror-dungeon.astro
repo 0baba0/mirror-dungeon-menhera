@@ -1,0 +1,183 @@
+---
+// web_site/src/pages/mirror-dungeon.astro
+import { getCollection } from 'astro:content';
+import SinnerGroup from '../components/SinnerGroup.astro';
+
+const allCharacters = await getCollection('characters');
+
+const sinnerNames = [
+  '이상', '파우스트', '돈키호테', '료슈', '뫼르소', '홍루', 
+  '히스클리프', '이스마엘', '로쟈', '싱클레어', '오티스', '그레고르'
+];
+
+const groupedCharacters = sinnerNames.map(name => {
+  let identities = allCharacters.filter(c => c.data.characterName === name);
+  
+  identities.sort((a, b) => {
+    if (b.data.grade !== a.data.grade) return b.data.grade - a.data.grade;
+    return new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime();
+  });
+
+  return { name, identities };
+});
+---
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>거울던전 | 거울던전 멘헤라</title>
+    <style>
+      body {
+        margin: 0; font-family: 'Pretendard', sans-serif;
+        background-color: #0a0a0a; color: #f5f5f5;
+        display: flex; flex-direction: column; min-height: 100vh;
+      }
+      
+      .logo-wrapper {
+        display: flex; align-items: center; gap: 0.8rem;
+        text-decoration: none;
+      }
+      .logo-img {
+        height: 40px; /* 로고 크기는 여기서 조절하세요 */
+        width: auto;
+        border-radius: 50%; /* 로고를 동그랗게 깎아줍니다 */
+        box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+      }
+      .logo-text {
+        color: #eab308; font-size: 1.5rem; font-weight: 900;
+        letter-spacing: 1px;
+      }
+
+      .top-nav {
+        background: #111; border-bottom: 1px solid #333;
+        padding: 1rem 2rem; display: flex; align-items: center;
+      }
+      .logo {
+        color: #eab308; font-size: 1.5rem; font-weight: 900;
+        text-decoration: none; letter-spacing: 1px;
+      }
+
+      /* 🚀 한 줄에 6개가 예쁘게 들어가도록 가로 넓이를 1800px로 대폭 늘렸습니다 */
+      .container { 
+        max-width: 1800px; 
+        margin: 0 auto; padding: 3rem 1.5rem; flex: 1; width: 100%; box-sizing: border-box;
+      }
+      .page-title { text-align: center; color: #fff; font-size: 2rem; margin-bottom: 0.5rem; }
+      .page-subtitle { text-align: center; color: #888; margin-bottom: 3rem; }
+      
+      /* 🚀 핵심: 무조건 6칸(1fr)으로 쪼개도록 강제 설정했습니다 */
+      .character-grid {
+        display: grid; 
+        grid-template-columns: repeat(6, 1fr); 
+        gap: 1.5rem; 
+      }
+
+      /* 모니터가 작거나 모바일 화면일 때 카드가 찌그러지지 않게 3칸/2칸으로 자동 조정되는 방어 코드 */
+      @media (max-width: 1400px) {
+        .character-grid { grid-template-columns: repeat(4, 1fr); }
+      }
+      @media (max-width: 900px) {
+        .character-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+      @media (max-width: 600px) {
+        .character-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      }
+
+      .empty-slot {
+        display: flex; flex-direction: column; gap: 1rem;
+        background: #151515; padding: 1.2rem;
+        border-radius: 12px; border: 1px dashed #444;
+      }
+      .empty-slot h3 { margin: 0; color: #555; font-size: 1.3rem; border-bottom: 2px solid #222; padding-bottom: 0.5rem;}
+      .empty-box {
+        flex: 1; display: flex; justify-content: center; align-items: center;
+        background: #0f0f0f; border-radius: 8px; color: #444; font-weight: bold; min-height: 350px; text-align: center;
+      }
+
+      /* 🚀 새 푸터 디자인 (왼쪽 정렬, 깔끔한 구분) */
+      .site-footer { 
+        background: #0a0a0a; 
+        border-top: 1px solid #222; 
+        padding: 3rem 2rem; 
+        margin-top: 4rem;
+        color: #888;
+      }
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        text-align: left;
+      }
+      .footer-title {
+        color: #eab308;
+        font-size: 1.2rem;
+        margin: 0 0 0.5rem 0;
+      }
+      .site-footer p { 
+        margin: 0; 
+        font-size: 0.85rem; 
+        line-height: 1.6;
+      }
+      .contact-info a {
+        color: #aaa;
+        text-decoration: underline;
+      }
+      .contact-info a:hover {
+        color: #eab308;
+      }
+      .copyright {
+        margin-top: 1.5rem !important;
+      }
+      .version-info {
+        margin-top: 1rem;
+        border-top: 1px solid #222;
+        padding-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-nav">
+      <a href="/" class="logo-wrapper">
+        <img src="/logo.png" alt="로고" class="logo-img" />
+        <span class="logo-text">거울던전 멘헤라</span>
+      </a>
+    </header>
+
+    <div class="container">
+      <h1 class="page-title">거울던전 편성</h1>
+      <p class="page-subtitle">수집된 총 인격 데이터: {allCharacters.length}개</p>
+      
+      <div class="character-grid">
+        {groupedCharacters.map(group => (
+          group.identities.length > 0 ? (
+            <SinnerGroup name={group.name} identities={group.identities} />
+          ) : (
+            <div class="empty-slot">
+              <h3>{group.name}</h3>
+              <div class="empty-box">데이터<br>수집 중...</div>
+            </div>
+          )
+        ))}
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <h2 class="footer-title">거울던전 멘헤라</h2>
+        <p>림버스 컴퍼니 비공식 수감자 도감 및 편성 시뮬레이터입니다.</p>
+        <p>문의사항이나 버그 제보는 아래 이메일로 연락해주세요.</p>
+        <p class="contact-info">Email: [이메일 주소 입력 예정]</p>
+        
+        <p class="copyright">© 2026 거울던전 멘헤라</p>
+        
+        <div class="version-info">
+          <p>2026.02.28 Ver.Astro 1.0.0</p>
+          <p>거울던전 멘헤라는 프로젝트문 공식 서비스가 아니며, 사용된 모든 게임 아트워크, 정보, 애셋의 권리와 저작권은 해당 저작권자(<b>Project Moon</b>)의 소유입니다.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
