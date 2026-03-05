@@ -2,258 +2,417 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>도감 데이터 팩토리</title>
+    <title>도감 데이터 통합 팩토리</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: #fff; display: flex; height: 100vh; margin: 0; }
-        .image-panel { flex: 1; display: flex; justify-content: center; align-items: center; background: #1e1e1e; border-right: 2px solid #333; padding: 2rem; position: relative; }
-        .image-panel img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .form-panel { width: 500px; padding: 2rem; overflow-y: auto; background: #222; }
-        h2 { color: #eab308; border-bottom: 1px solid #444; padding-bottom: 1rem; margin-top: 0; }
-        .form-group { margin-bottom: 1.5rem; background: #2a2a2a; padding: 1rem; border-radius: 6px;}
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #ccc; font-size: 0.9rem;}
-        input[type="text"], input[type="date"], select { width: 100%; padding: 0.6rem; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
-        button { padding: 1rem; color: #000; font-weight: bold; font-size: 1rem; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-        .btn-save { background: #eab308; flex: 2; }
-        .btn-save:hover { background: #ca8a04; }
-        .btn-delete { background: #dc2626; color: #fff; flex: 1; }
-        .btn-delete:hover { background: #b91c1c; }
-        .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .skill-inputs { display: flex; gap: 0.3rem; }
+        body { font-family: sans-serif; background: #121212; color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        .left-panel { flex: 1; background: #1a1a1a; padding: 2rem; overflow-y: auto; border-right: 2px solid #333; display: flex; flex-direction: column; }
+        .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .filter-btn { background: #333; color: #ccc; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: #eab308; color: #000; font-weight: bold; }
+        
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; overflow-y: auto; }
+        .img-card { position: relative; background: #000; padding: 0.5rem; border-radius: 8px; cursor: pointer; border: 2px solid transparent; text-align: center; transition: 0.2s; }
+        .img-card:hover { border-color: #555; transform: translateY(-3px); }
+        .img-card.selected { border-color: #eab308; box-shadow: 0 0 15px rgba(234,179,8,0.4); }
+        .img-card img { width: 100%; height: 120px; object-fit: cover; object-position: top center; border-radius: 4px; pointer-events: none; }
+        .img-name { margin-top: 0.5rem; font-size: 0.75rem; color: #aaa; word-break: break-all; }
+        .badge { position: absolute; top: -5px; right: -5px; background: #4ade80; color: #000; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        
+        .right-panel { width: 550px; background: #222; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+        h2 { color: #eab308; margin: 0; border-bottom: 1px solid #444; padding-bottom: 0.8rem; }
+        
+        /* 🚀 네비게이션 버튼 (기프트 팩토리 추가) */
+        .top-nav { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%; flex-wrap: wrap;}
+        .top-nav a, .top-nav button { 
+            flex: 1; text-align: center; text-decoration: none; padding: 0.8rem 0; 
+            border-radius: 6px; font-weight: bold; font-size: 0.85rem; transition: 0.2s; 
+            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            white-space: nowrap; min-width: 120px;
+        }
+        .nav-scraper { background: #3a2e00; color: #eab308; border: 1px solid #eab308; }
+        .nav-scraper:hover { background: #eab308; color: #000; }
+        .nav-cleanup { background: #3a0000; color: #ef4444; border: 1px solid #ef4444; }
+        .nav-cleanup:hover { background: #ef4444; color: #fff; }
+        .nav-batch { background: #0f766e; color: #ccfbf1; border: 1px solid #14b8a6; }
+        .nav-batch:hover { background: #14b8a6; color: #000; }
+        .nav-gift { background: #0369a1; color: #bae6fd; border: 1px solid #38bdf8; }
+        .nav-gift:hover { background: #38bdf8; color: #000; }
+        
+        .parser-box { background: #2a2a2a; padding: 1rem; border-radius: 8px; border: 1px solid #444; }
+        textarea { width: 100%; height: 100px; padding: 0.8rem; background: #151515; color: #fff; border: 1px solid #555; border-radius: 4px; box-sizing: border-box; resize: none; margin-bottom: 0.5rem; font-size: 0.9rem;}
+        button.btn-parse { width: 100%; padding: 0.8rem; background: #eab308; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        button.btn-parse:hover { background: #ca8a04; }
+        
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: #ccc; margin-bottom: 0.3rem; }
+        input[type="text"], input[type="date"], select { width: 100%; padding: 0.5rem; background: #151515; color: #fff; border: 1px solid #444; border-radius: 4px; box-sizing: border-box; }
+        .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .skill-inputs { display: flex; gap: 0.2rem; }
         .kw-badge { display: inline-flex; align-items: center; background: #444; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; color: #fff; font-size: 0.85rem; margin-bottom: 0.3rem;}
         .kw-badge input { margin-right: 0.4rem; }
         
-        /* 🚀 새로 추가된 커스텀 검색창 디자인 */
-        .search-item { padding: 0.6rem 0.8rem; border-bottom: 1px solid #333; cursor: pointer; font-size: 0.9rem; color: #ccc; transition: 0.1s; }
-        .search-item:hover { background: #eab308; color: #000; font-weight: bold; }
-        .search-item:last-child { border-bottom: none; }
+        .btn-delete { background: transparent; border: 1px solid #dc2626; color: #dc2626; margin-top: 0.5rem; width: 100%; padding: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s;}
+        .btn-delete:hover { background: #dc2626; color: #fff; }
+        .btn-save { background: #fff; color: #000; padding: 1rem; font-size: 1.1rem; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 0.5rem;}
     </style>
 </head>
 <body>
-    <div class="image-panel">
-        <img src="/images/{{ image }}" alt="수감자 이미지">
+
+    <div class="left-panel">
+        <h2 style="margin-bottom: 1rem;">1. 이미지 및 데이터 목록</h2>
+        
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterList('all', this)">전체보기</button>
+            <button class="filter-btn" onclick="filterList('unlinked', this)" style="color:#ef4444;">미입력만</button>
+            <button class="filter-btn" onclick="filterList('linked', this)" style="color:#4ade80;">완료됨</button>
+        </div>
+
+        <div class="image-grid" id="image-grid">
+            {% for img in images %}
+            <div class="img-card {{ 'linked' if img.has_data else 'unlinked' }}" onclick="selectImage('{{ img.filename }}', this)">
+                <img src="/images/{{ img.filename }}" alt="char">
+                <div class="img-name">{{ img.display_name if img.has_data else img.filename }}</div>
+                {% if img.has_data %}<div class="badge">✅ 완료</div>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <div class="form-panel">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <a href="/scraper" style="color: #eab308; text-decoration: none; font-size: 0.85rem;">🔍 수집기 가기</a>
-            <a href="/cleanup" style="color: #ef4444; text-decoration: none; font-size: 0.85rem;" onclick="return confirm('찌꺼기 데이터를 청소할까요?');">🧹 데이터 무결성 검사</a>
+    <div class="right-panel">
+        <div class="top-nav">
+            <a href="/gift_factory" class="nav-gift">🎁 기프트 팩토리 가기</a>
+            <a href="/scraper" class="nav-scraper">🔍 수집기</a>
+            <button type="button" class="nav-batch" onclick="runBatchConvert()">🔄 이름 세탁</button>
+            <a href="/cleanup" class="nav-cleanup" onclick="return confirm('찌꺼기 데이터를 청소할까요?');">🧹 무결성 검사</a>
         </div>
 
-        <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem; background: #2a2a2a; padding: 1rem; border-radius: 6px; align-items: center;">
-            <a href="{% if page > 0 %}/?page={{ page - 1 }}{% else %}#{% endif %}" 
-               style="text-decoration: none; padding: 0.5rem 0.8rem; background: #444; color: {% if page > 0 %}#fff{% else %}#666{% endif %}; border-radius: 4px; pointer-events: {% if page > 0 %}auto{% else %}none{% endif %}; font-size: 0.9rem; white-space: nowrap;">
-               ◀ 이전
-            </a>
-            
-            <div style="flex: 1; position: relative;">
-                <input type="text" id="custom_search_input" placeholder="🔍 클릭하여 전체보기 또는 타자 쳐서 검색..." 
-                       style="width: 100%; padding: 0.5rem; background: #1a1a1a; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box;"
-                       autocomplete="off">
-                
-                <div id="custom_search_dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #1e1e1e; border: 1px solid #444; max-height: 250px; overflow-y: auto; z-index: 1000; border-radius: 0 0 4px 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.8);">
-                    {% for item in search_list %}
-                    <div class="search-item" data-page="{{ item.page }}">
-                        {{ item.page + 1 }}. {{ item.name }}
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div style="color: #888; font-weight: bold; white-space: nowrap; font-size: 0.9rem;">{{ page + 1 }} / {{ total }}</div>
+        <div class="parser-box">
+            <textarea id="raw_text" placeholder="나무위키 표 영역을 드래그해서 복사(Ctrl+C)한 뒤 여기에 붙여넣기 하세요..."></textarea>
+            <button type="button" class="btn-parse" onclick="runParser()">📝 붙여넣은 텍스트에서 데이터 추출</button>
+            <div id="parse_msg" style="margin-top: 0.5rem; font-size: 0.85rem; color: #eab308; text-align: center;">왼쪽에서 이미지를 먼저 선택해주세요.</div>
         </div>
 
-        <h2>데이터 입력</h2>
-        
-        {% set s = data.get('skills', {}) %}
-        {% set d = data.get('defense', {}) %}
+        <form action="/save" method="POST" id="auto-form">
+            <input type="hidden" name="char_id" id="h_char_id" value="">
+            <input type="hidden" name="img_filename" id="h_img_filename" value="">
 
-        <form action="/save" method="POST">
-            <input type="hidden" name="char_id" value="{{ char_id }}">
-            <input type="hidden" name="page" value="{{ page }}">
-            <input type="hidden" name="img_filename" value="{{ image }}">
-
-            <div class="form-group">
-                <label>수감자 이름</label>
-                <select name="characterName" required>
-                    <option value="">-- 선택 --</option>
-                    {% for name in ['이상', '파우스트', '돈키호테', '료슈', '뫼르소', '홍루', '히스클리프', '이스마엘', '로쟈', '싱클레어', '오티스', '그레고르'] %}
-                    <option value="{{ name }}" {% if data.characterName == name %}selected{% endif %}>{{ name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>인격 이름 (예: W사 정리요원)</label>
-                <input type="text" name="identityName" value="{{ data.identityName or '' }}" required>
-            </div>
-
-            <div class="form-group skill-grid">
-                <div>
-                    <label>인격 등급</label>
-                    <select name="grade" required>
-                        <option value="1" {% if data.grade == 1 %}selected{% endif %}>1성 (0)</option>
-                        <option value="2" {% if data.grade == 2 %}selected{% endif %}>2성 (00)</option>
-                        <option value="3" {% if data.grade == 3 %}selected{% endif %}>3성 (000)</option>
-                    </select>
-                </div>
-                <div>
-                    <label>출시 날짜</label>
-                    <input type="date" name="releaseDate" value="{{ data.releaseDate or '' }}" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label style="color: #eab308;">이미지 기준점 (얼굴 위치)</label>
-                <select name="imagePosition">
-                    <option value="left" {% if data.imagePosition == 'left' %}selected{% endif %}>왼쪽</option>
-                    <option value="center" {% if data.imagePosition == 'center' or not data.imagePosition %}selected{% endif %}>가운데 (기본)</option>
-                    <option value="right" {% if data.imagePosition == 'right' %}selected{% endif %}>오른쪽</option>
-                </select>
-            </div>
-
-            <div class="checkbox-group">
-                <input type="checkbox" name="isDefault" id="isDefault" {% if data.isDefault %}checked{% endif %}>
-                <label for="isDefault" style="color: #eab308; margin:0; cursor: pointer;">기본 인격으로 설정 (메인 노출)</label>
-            </div>
-
-            <div class="form-group">
-                <label>소속 (여러 개면 쉼표로 구분)</label>
-                <input type="text" name="affiliation" placeholder="예: 림버스 컴퍼니, W사" value="{{ data.affiliation | join(', ') if data.affiliation is iterable and data.affiliation is not string else (data.affiliation or '림버스 컴퍼니') }}">
-            </div>
-
-            <div class="form-group">
-                <label>키워드 선택 및 입력</label>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.8rem;">
-                    {% set common_keywords = ['화상', '출혈', '진동', '파열', '침잠', '호흡', '충전'] %}
-                    {% for kw in common_keywords %}
-                    <label class="kw-badge">
-                        <input type="checkbox" name="keywords_check" value="{{ kw }}" {% if data.keywords and kw in data.keywords %}checked{% endif %}> {{ kw }}
-                    </label>
-                    {% endfor %}
-                </div>
-                
-                {% set manual_kws = [] %}
-                {% if data.keywords %}
-                    {% for k in data.keywords %}
-                        {% if k not in common_keywords %}
-                            {% set _ = manual_kws.append(k) %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-                <input type="text" name="manual_keywords" placeholder="특수 키워드 직접 입력 (쉼표로 구분)" value="{{ manual_kws | join(', ') }}">
-            </div>
-
-            <div class="form-group">
-                <label>수비 스킬</label>
-                <div class="skill-inputs">
-                    <select name="defense_type">
-                        <option value="가드" {% if d.get('type') == '가드' %}selected{% endif %}>가드</option>
-                        <option value="회피" {% if d.get('type') == '회피' %}selected{% endif %}>회피</option>
-                        <option value="반격" {% if d.get('type') == '반격' %}selected{% endif %}>반격</option>
-                    </select>
-                    <select name="defense_attr">
-                        {% for attr in ['없음', '분노', '색욕', '나태', '탐식', '우울', '오만', '질투'] %}
-                        <option value="{{ attr }}" {% if d.get('attribute') == attr %}selected{% endif %}>{{ attr }}</option>
+            <div class="skill-grid">
+                <div class="form-group">
+                    <label>수감자 이름</label>
+                    <select name="characterName" id="f_char_name" required>
+                        <option value="">-- 선택 --</option>
+                        {% for name in ['이상', '파우스트', '돈키호테', '료슈', '뫼르소', '홍루', '히스클리프', '이스마엘', '로쟈', '싱클레어', '오티스', '그레고르'] %}
+                        <option value="{{ name }}">{{ name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label style="color: #eab308; margin-bottom: 1rem;">스킬 정보 (유형 + 죄악 속성)</label>
-                <div class="skill-grid">
-                    {% for i in range(1, 4) %}
-                    {% set sk = s.get('skill' ~ i, {}) %}
-                    <div>
-                        <label>{{ i }}스킬</label>
-                        <div class="skill-inputs">
-                            <select name="skill{{ i }}_type">
-                                {% for type in ['참격', '관통', '타격'] %}
-                                <option value="{{ type }}" {% if sk.get('type') == type %}selected{% endif %}>{{ type }}</option>
-                                {% endfor %}
-                            </select>
-                            <select name="skill{{ i }}_attr">
-                                {% for attr in ['분노', '색욕', '나태', '탐식', '우울', '오만', '질투'] %}
-                                <option value="{{ attr }}" {% if sk.get('attribute') == attr %}selected{% endif %}>{{ attr }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                <div class="form-group">
+                    <label>인격 등급 / 출시일</label>
+                    <div style="display: flex; gap: 0.2rem;">
+                        <select name="grade" id="f_grade" style="flex: 1;"><option value="1">1성</option><option value="2">2성</option><option value="3">3성</option></select>
+                        <input type="date" name="releaseDate" id="f_release" style="flex: 2;" required>
                     </div>
-                    
-                    {% set sp = s.get('special' ~ i, {}) %}
-                    <div>
-                        <label>특수 {{ i }}스킬</label>
-                        <div class="skill-inputs">
-                            <select name="special{{ i }}_type">
-                                {% for type in ['없음', '참격', '관통', '타격'] %}
-                                <option value="{{ type }}" {% if sp.get('type') == type %}selected{% endif %}>{{ type }}</option>
-                                {% endfor %}
-                            </select>
-                            <select name="special{{ i }}_attr">
-                                {% for attr in ['없음', '분노', '색욕', '나태', '탐식', '우울', '오만', '질투'] %}
-                                <option value="{{ attr }}" {% if sp.get('attribute') == attr %}selected{% endif %}>{{ attr }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
 
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn-save">저장 및 다음 이미지 ➔</button>
-                <button type="button" class="btn-delete" onclick="if(confirm('정말 이 이미지를 삭제하시겠습니까? (복구 불가)')) document.getElementById('delete-form').submit();">삭제 🗑️</button>
+            <div class="form-group">
+                <label>인격 이름</label>
+                <input type="text" name="identityName" id="f_id_name" required>
             </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label>소속 (자동 추출됨)</label>
+                    <input type="text" name="affiliation" id="f_aff">
+                </div>
+                <div class="form-group" style="width: 100px;">
+                    <label>이미지 위치</label>
+                    <select name="imagePosition" id="f_img_pos">
+                        <option value="left">왼쪽</option>
+                        <option value="center" selected>가운데</option>
+                        <option value="right">오른쪽</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>주요 키워드 선택</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem;" id="kw_container">
+                    {% for kw in ['화상', '출혈', '진동', '파열', '침잠', '호흡', '충전'] %}
+                    <label class="kw-badge">
+                        <input type="checkbox" name="keywords_check" value="{{ kw }}" class="kw-checkbox"> {{ kw }}
+                    </label>
+                    {% endfor %}
+                </div>
+                <input type="text" name="manual_keywords" id="f_man_kw" placeholder="그 외 특수 키워드 (쉼표 구분)">
+            </div>
+
+            <div class="form-group">
+                <label>수비 스킬 (기본 / 특수)</label>
+                <div class="skill-grid">
+                    <div>
+                        <div style="font-size: 0.75rem; color: #aaa; margin-bottom: 0.2rem;">기본 수비</div>
+                        <div class="skill-inputs">
+                            <select name="defense_type" id="f_def_type">
+                                <option value="가드">가드(방어)</option>
+                                <option value="회피">회피</option>
+                                <option value="반격">반격</option>
+                                <option value="강화방어" style="color:#eab308;">강화 방어</option>
+                                <option value="강화회피" style="color:#eab308;">강화 회피</option>
+                                <option value="강화반격" style="color:#eab308;">강화 반격</option>
+                            </select>
+                            <select name="defense_attr" id="f_def_attr">
+                                <option value="없음">없음</option><option value="분노">분노</option><option value="색욕">색욕</option><option value="나태">나태</option><option value="탐식">탐식</option><option value="우울">우울</option><option value="오만">오만</option><option value="질투">질투</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #eab308; margin-bottom: 0.2rem;">특수 수비 (강화 등)</div>
+                        <div class="skill-inputs">
+                            <select name="sp_def_type" id="f_sp_def_type">
+                                <option value="없음">없음</option>
+                                <option value="가드">가드(방어)</option>
+                                <option value="회피">회피</option>
+                                <option value="반격">반격</option>
+                                <option value="강화방어" style="color:#eab308;">강화 방어</option>
+                                <option value="강화회피" style="color:#eab308;">강화 회피</option>
+                                <option value="강화반격" style="color:#eab308;">강화 반격</option>
+                            </select>
+                            <select name="sp_def_attr" id="f_sp_def_attr">
+                                <option value="없음">없음</option><option value="분노">분노</option><option value="색욕">색욕</option><option value="나태">나태</option><option value="탐식">탐식</option><option value="우울">우울</option><option value="오만">오만</option><option value="질투">질투</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <label style="color: #eab308; margin-top: 0.5rem; border-bottom: 1px solid #444; padding-bottom: 0.3rem;">공격 스킬 & 강화 스킬</label>
+            <div class="skill-grid">
+                {% for i in range(1, 4) %}
+                <div>
+                    <label>{{ i }}스킬 (기본)</label>
+                    <div class="skill-inputs" style="margin-bottom: 0.5rem;">
+                        <select name="skill{{ i }}_type" id="f_s{{ i }}_type"><option value="참격">참격</option><option value="관통">관통</option><option value="타격">타격</option></select>
+                        <select name="skill{{ i }}_attr" id="f_s{{ i }}_attr"><option value="분노">분노</option><option value="색욕">색욕</option><option value="나태">나태</option><option value="탐식">탐식</option><option value="우울">우울</option><option value="오만">오만</option><option value="질투">질투</option></select>
+                    </div>
+                </div>
+                <div>
+                    <label style="color:#aaa;">강화 {{ i }}스킬</label>
+                    <div class="skill-inputs" style="margin-bottom: 0.5rem;">
+                        <select name="special{{ i }}_type" id="f_sp{{ i }}_type"><option value="없음">없음</option><option value="참격">참격</option><option value="관통">관통</option><option value="타격">타격</option></select>
+                        <select name="special{{ i }}_attr" id="f_sp{{ i }}_attr"><option value="없음">없음</option><option value="분노">분노</option><option value="색욕">색욕</option><option value="나태">나태</option><option value="탐식">탐식</option><option value="우울">우울</option><option value="오만">오만</option><option value="질투">질투</option></select>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; color: #eab308; cursor: pointer;">
+                    <input type="checkbox" name="isDefault" id="f_isDefault"> 기본 인격 설정
+                </label>
+            </div>
+
+            <button type="submit" class="btn-save">💾 이미지와 데이터 연결하여 저장</button>
+            <button type="button" class="btn-delete" onclick="if(confirm('이 이미지와 데이터를 완전히 삭제하시겠습니까?')) document.getElementById('delete-form').submit();">🗑️ 데이터 & 이미지 완전 삭제</button>
         </form>
 
         <form id="delete-form" action="/delete" method="POST" style="display:none;">
-            <input type="hidden" name="img_filename" value="{{ image }}">
-            <input type="hidden" name="char_id" value="{{ char_id }}">
-            <input type="hidden" name="page" value="{{ page }}">
+            <input type="hidden" name="img_filename" id="del_img_filename">
+            <input type="hidden" name="char_id" id="del_char_id">
         </form>
     </div>
 
     <script>
-        const searchInput = document.getElementById('custom_search_input');
-        const searchDropdown = document.getElementById('custom_search_dropdown');
-        const searchItems = document.querySelectorAll('.search-item');
+        const characterDataMap = {
+            {% for img in images %}
+            "{{ img.filename }}": {{ img.json_data | tojson | safe }},
+            {% endfor %}
+        };
 
-        // 1. 검색창 클릭 시 전체 목록을 예쁘게 펼침
-        searchInput.addEventListener('focus', () => {
-            searchDropdown.style.display = 'block';
-            searchInput.value = ''; // 타이핑 준비
-            searchInput.style.borderColor = '#eab308';
-            searchItems.forEach(item => item.style.display = 'block');
-        });
+        const commonKws = ['화상', '출혈', '진동', '파열', '침잠', '호흡', '충전'];
 
-        // 2. 타이핑할 때마다 목록 실시간 필터링
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            searchDropdown.style.display = 'block'; 
-            searchItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(term)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
+        function filterList(type, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            document.querySelectorAll('.img-card').forEach(card => {
+                if(type === 'all') card.style.display = 'block';
+                else if(type === 'unlinked') card.style.display = card.classList.contains('unlinked') ? 'block' : 'none';
+                else if(type === 'linked') card.style.display = card.classList.contains('linked') ? 'block' : 'none';
+            });
+        }
+
+        function selectImage(filename, cardElement) {
+            document.querySelectorAll('.img-card').forEach(el => el.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            
+            const charId = filename.substring(0, filename.lastIndexOf('.')) || filename;
+            document.getElementById('h_img_filename').value = filename;
+            document.getElementById('h_char_id').value = charId;
+            document.getElementById('del_img_filename').value = filename;
+            document.getElementById('del_char_id').value = charId;
+
+            const jsonData = characterDataMap[filename] || {};
+            
+            if (Object.keys(jsonData).length > 0) {
+                document.getElementById('parse_msg').style.color = "#4ade80";
+                document.getElementById('parse_msg').innerText = "✅ 기존에 입력된 데이터를 불러왔습니다.";
+                
+                document.getElementById('f_char_name').value = jsonData.characterName || '';
+                document.getElementById('f_id_name').value = jsonData.identityName || '';
+                document.getElementById('f_grade').value = jsonData.grade || 1;
+                document.getElementById('f_release').value = jsonData.releaseDate || '';
+                document.getElementById('f_aff').value = (jsonData.affiliation || []).join(', ');
+                document.getElementById('f_img_pos').value = jsonData.imagePosition || 'center';
+                document.getElementById('f_isDefault').checked = jsonData.isDefault || false;
+
+                document.querySelectorAll('.kw-checkbox').forEach(cb => cb.checked = false);
+                const manualKws = [];
+                if(jsonData.keywords) {
+                    jsonData.keywords.forEach(kw => {
+                        if(commonKws.includes(kw)) {
+                            const cb = document.querySelector(`.kw-checkbox[value="${kw}"]`);
+                            if(cb) cb.checked = true;
+                        } else {
+                            manualKws.push(kw);
+                        }
+                    });
                 }
-            });
-        });
+                document.getElementById('f_man_kw').value = manualKws.join(', ');
 
-        // 3. 목록 중 하나를 클릭하면 즉시 해당 페이지로 이동
-        searchItems.forEach(item => {
-            // mousedown을 써야 검색창 focus 해제(blur)보다 먼저 클릭이 인식됨
-            item.addEventListener('mousedown', () => { 
-                const page = item.getAttribute('data-page');
-                window.location.href = '/?page=' + page;
-            });
-        });
+                if(jsonData.defense) {
+                    document.getElementById('f_def_type').value = jsonData.defense.type || '가드';
+                    document.getElementById('f_def_attr').value = jsonData.defense.attribute || '없음';
+                }
+                
+                if(jsonData.specialDefense) {
+                    document.getElementById('f_sp_def_type').value = jsonData.specialDefense.type || '없음';
+                    document.getElementById('f_sp_def_attr').value = jsonData.specialDefense.attribute || '없음';
+                } else {
+                    document.getElementById('f_sp_def_type').value = '없음';
+                    document.getElementById('f_sp_def_attr').value = '없음';
+                }
 
-        // 4. 검색창 바깥을 누르면 목록 닫기
-        searchInput.addEventListener('blur', () => {
-            searchDropdown.style.display = 'none';
-            searchInput.style.borderColor = '#444';
+                if(jsonData.skills) {
+                    for(let i=1; i<=3; i++) {
+                        if(jsonData.skills['skill'+i]) {
+                            document.getElementById('f_s'+i+'_type').value = jsonData.skills['skill'+i].type || '참격';
+                            document.getElementById('f_s'+i+'_attr').value = jsonData.skills['skill'+i].attribute || '분노';
+                        }
+                        if(jsonData.skills['special'+i]) {
+                            document.getElementById('f_sp'+i+'_type').value = jsonData.skills['special'+i].type || '없음';
+                            document.getElementById('f_sp'+i+'_attr').value = jsonData.skills['special'+i].attribute || '없음';
+                        }
+                    }
+                }
+            } else {
+                document.getElementById('auto-form').reset();
+                document.getElementById('h_img_filename').value = filename; 
+                document.getElementById('h_char_id').value = charId;
+                document.getElementById('del_img_filename').value = filename;
+                document.getElementById('del_char_id').value = charId;
+                
+                document.getElementById('f_img_pos').value = 'center';
+                document.getElementById('f_sp_def_type').value = '없음';
+                document.getElementById('f_sp_def_attr').value = '없음';
+                
+                document.getElementById('parse_msg').style.color = "#eab308";
+                document.getElementById('parse_msg').innerText = "✨ 새 이미지입니다. 위키 텍스트를 붙여넣고 추출을 누르세요.";
+            }
+        }
+
+        async function runParser() {
+            if (!document.getElementById('h_img_filename').value) {
+                alert("왼쪽 목록에서 데이터를 넣을 이미지를 먼저 클릭해주세요!");
+                return;
+            }
+
+            const rawInput = document.getElementById('raw_text').value.trim();
+            const msgBox = document.getElementById('parse_msg');
+            
+            if (!rawInput) {
+                msgBox.style.color = "#ef4444";
+                msgBox.innerText = "텍스트를 먼저 붙여넣어 주세요!";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('raw_text', rawInput);
+            msgBox.style.color = "#eab308";
+            msgBox.innerText = "📝 추출 중...";
+
+            try {
+                const response = await fetch('/api/parse_text', { method: 'POST', body: formData });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    const d = res.data;
+                    document.getElementById('f_char_name').value = d.characterName || '';
+                    document.getElementById('f_id_name').value = d.identityName || '';
+                    if(d.grade) document.getElementById('f_grade').value = d.grade;
+                    if(d.releaseDate) document.getElementById('f_release').value = d.releaseDate;
+                    if(d.affiliation) document.getElementById('f_aff').value = d.affiliation.join(', ');
+
+                    if(d.defense && d.defense.type) {
+                        document.getElementById('f_def_type').value = d.defense.type;
+                        document.getElementById('f_def_attr').value = d.defense.attribute || '없음';
+                    }
+                    
+                    if(d.specialDefense && d.specialDefense.type) {
+                        document.getElementById('f_sp_def_type').value = d.specialDefense.type;
+                        document.getElementById('f_sp_def_attr').value = d.specialDefense.attribute || '없음';
+                    } else {
+                        document.getElementById('f_sp_def_type').value = '없음';
+                        document.getElementById('f_sp_def_attr').value = '없음';
+                    }
+
+                    if(d.skills) {
+                        for(let i=1; i<=3; i++) {
+                            if(d.skills['skill'+i] && d.skills['skill'+i].type) {
+                                document.getElementById('f_s'+i+'_type').value = d.skills['skill'+i].type;
+                                document.getElementById('f_s'+i+'_attr').value = d.skills['skill'+i].attribute;
+                            }
+                            if(d.skills['special'+i] && d.skills['special'+i].type) {
+                                document.getElementById('f_sp'+i+'_type').value = d.skills['special'+i].type;
+                                document.getElementById('f_sp'+i+'_attr').value = d.skills['special'+i].attribute;
+                            }
+                        }
+                    }
+                    msgBox.style.color = "#4ade80";
+                    msgBox.innerText = "✅ 성공! 강화스킬 및 특수사항은 수동으로 매칭해주세요.";
+                } else {
+                    msgBox.style.color = "#ef4444";
+                    msgBox.innerText = "❌ 실패: " + res.message;
+                }
+            } catch (e) {
+                msgBox.style.color = "#ef4444";
+                msgBox.innerText = "❌ 에러 발생.";
+            }
+        }
+
+        async function runBatchConvert() {
+            if (!confirm("모든 데이터를 '[인격명]_[수감자명].webp' 형식으로 일괄 변경하시겠습니까?\n(이 작업은 되돌릴 수 없으며 약간의 시간이 걸립니다.)")) return;
+            
+            try {
+                document.body.style.cursor = "wait";
+                const response = await fetch('/batch_convert', { method: 'POST' });
+                const res = await response.json();
+                
+                alert(res.message);
+                window.location.reload();
+            } catch (e) {
+                alert("일괄 변환 중 오류가 발생했습니다.");
+            } finally {
+                document.body.style.cursor = "default";
+            }
+        }
+
+        document.getElementById('auto-form').addEventListener('submit', function(e) {
+            if (!document.getElementById('h_img_filename').value) {
+                e.preventDefault();
+                alert("왼쪽 목록에서 연결할 이미지를 먼저 선택해주세요!");
+            }
         });
     </script>
 </body>

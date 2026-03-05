@@ -1,0 +1,51 @@
+{
+  "id": "W사_4등급_정리_요원_-_CCA_히스클리프_1772530488",
+  "characterName": "히스클리프",
+  "identityName": "W사 4등급 정리 요원 - CCA",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-10-23",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "충전"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "질투"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "강화방어",
+    "attribute": "질투"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "W사"
+  ],
+  "image_url": "/images/characters/W사_4등급_정리_요원_-_CCA_히스클리프_1772530488.webp?v=1772530489"
+}

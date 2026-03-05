@@ -1,0 +1,46 @@
+{
+  "id": "T사_3등급_징수직_직원_돈키호테_1772449886",
+  "characterName": "돈키호테",
+  "identityName": "T사 3등급 징수직 직원",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-06-27",
+  "imagePosition": "right",
+  "keywords": [
+    "진동"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "나태"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "나태"
+  },
+  "affiliation": [
+    "T사"
+  ],
+  "image_url": "/images/characters/T사_3등급_징수직_직원_돈키호테_1772449886.webp?v=1772449886"
+}

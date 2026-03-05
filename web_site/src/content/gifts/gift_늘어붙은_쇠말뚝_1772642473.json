@@ -1,0 +1,15 @@
+{
+  "id": "gift_늘어붙은_쇠말뚝_1772642473",
+  "name": "늘어붙은 쇠말뚝",
+  "tier": 1,
+  "category": "출혈",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "target_condition": [],
+  "condition_dependency": "none",
+  "is_ego_gift": false,
+  "effect": "단일 코인 스킬을 사용하여 적에게 적중 시, 대상에게 출혈 위력 1 부여하고 다음 턴까지 방어 레벨 감소 2 부여.\r\n대상이 출혈 상태일 경우, 효과가 강화되어 출혈 위력 3 부여.",
+  "image_url": "/images/gifts/gift_늘어붙은_쇠말뚝_1772642473.webp?v=1772642473"
+}

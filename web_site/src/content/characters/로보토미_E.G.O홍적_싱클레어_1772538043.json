@@ -1,0 +1,51 @@
+{
+  "id": "로보토미_E.G.O홍적_싱클레어_1772538043",
+  "characterName": "싱클레어",
+  "identityName": "로보토미 E.G.O::홍적",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-06-29",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "기술해방연합",
+    "E.G.O 장비"
+  ],
+  "image_url": "/images/characters/로보토미_E.G.O홍적_싱클레어_1772538043.webp?v=1772538043"
+}

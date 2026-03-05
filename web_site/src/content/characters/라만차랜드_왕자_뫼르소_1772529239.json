@@ -1,0 +1,53 @@
+{
+  "id": "라만차랜드_왕자_뫼르소_1772529239",
+  "characterName": "뫼르소",
+  "identityName": "라만차랜드 왕자",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-10-23",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "참격",
+      "attribute": "색욕"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "색욕"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "라만차랜드",
+    "혈귀",
+    "제3권속"
+  ],
+  "image_url": "/images/characters/라만차랜드_왕자_뫼르소_1772529239.webp?v=1772529239"
+}

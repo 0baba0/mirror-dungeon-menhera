@@ -1,0 +1,52 @@
+{
+  "id": "LCE_E.G.O초롱_이상_1772466128",
+  "characterName": "이상",
+  "identityName": "LCE E.G.O::초롱",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2025-01-23",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "질투"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "반격",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "림버스 컴퍼니",
+    "LCE",
+    "E.G.O 장비"
+  ],
+  "image_url": "/images/characters/LCE_E.G.O초롱_이상_1772466128.webp?v=1772466128"
+}

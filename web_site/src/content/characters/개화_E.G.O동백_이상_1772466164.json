@@ -1,0 +1,50 @@
+{
+  "id": "개화_E.G.O동백_이상_1772466164",
+  "characterName": "이상",
+  "identityName": "개화 E.G.O::동백",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-06-15",
+  "imagePosition": "center",
+  "keywords": [
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "오만"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "나태"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "기술해방연합"
+  ],
+  "image_url": "/images/characters/개화_E.G.O동백_이상_1772466164.webp?v=1772466164"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "검지_대행자_-_개화_E.G.O대행_돈키호테_1772466777",
+  "characterName": "돈키호테",
+  "identityName": "검지 대행자 - 개화 E.G.O::대행",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2026-01-08",
+  "imagePosition": "center",
+  "keywords": [
+    "침잠",
+    "호흡"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "special2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "special3": {
+      "type": "참격",
+      "attribute": "우울"
+    }
+  },
+  "defense": {
+    "type": "반격",
+    "attribute": "우울"
+  },
+  "specialDefense": {
+    "type": "강화반격",
+    "attribute": "우울"
+  },
+  "affiliation": [
+    "손가락",
+    "거미집",
+    "검지"
+  ],
+  "image_url": "/images/characters/검지_대행자_-_개화_E.G.O대행_돈키호테_1772466777.webp?v=1772466777"
+}

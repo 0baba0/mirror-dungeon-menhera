@@ -1,0 +1,52 @@
+{
+  "id": "콩콩이파_두목_홍루_1772529396",
+  "characterName": "홍루",
+  "identityName": "콩콩이파 두목",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "뒷골목",
+    "조직",
+    "콩콩이파"
+  ],
+  "image_url": "/images/characters/콩콩이파_두목_홍루_1772529396.webp?v=1772529397"
+}

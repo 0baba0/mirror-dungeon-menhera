@@ -1,0 +1,50 @@
+{
+  "id": "G사_부장_오티스_1772541341",
+  "characterName": "오티스",
+  "identityName": "G사 부장",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "나태"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "G사"
+  ],
+  "image_url": "/images/characters/G사_부장_오티스_1772541341.webp?v=1772541341"
+}

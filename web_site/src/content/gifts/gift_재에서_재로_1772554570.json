@@ -1,0 +1,12 @@
+{
+  "id": "gift_재에서_재로_1772554570",
+  "name": "재에서 재로",
+  "tier": 1,
+  "category": "화상",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "effect": "기본 효과\r\n전투 시작 시 모든 적(환상체일 경우, 모든 부위)이 화상에 걸린 경우, 적 전체(환상체일 경우, 모든 부위)에게 화상 위력 2 부여\r\n+\r\n전투 시작 시 화상에 걸린 적 전체(환상체일 경우, 모든 부위)에게 화상 위력 2 부여\r\n++\r\n전투 시작 시 적 전체(환상체일 경우, 모든 부위)에게 화상 위력 3 부여",
+  "image_url": "/images/gifts/gift_재에서_재로_1772554570.webp?v=1772554570"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "LCA_우제트_선봉_3팀_팀장_오티스_1772541546",
+  "characterName": "오티스",
+  "identityName": "LCA 우제트 선봉 3팀 팀장",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-12-31",
+  "imagePosition": "center",
+  "keywords": [
+    "진동",
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "우울"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "림버스 컴퍼니",
+    "LCA"
+  ],
+  "image_url": "/images/characters/LCA_우제트_선봉_3팀_팀장_오티스_1772541546.webp?v=1772541546"
+}

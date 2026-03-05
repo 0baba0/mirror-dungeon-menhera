@@ -1,0 +1,51 @@
+{
+  "id": "워더링하이츠_치프_버틀러_오티스_1772541412",
+  "characterName": "오티스",
+  "identityName": "워더링하이츠 치프 버틀러",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-03-28",
+  "imagePosition": "center",
+  "keywords": [
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "우울"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "해결사",
+    "워더링하이츠"
+  ],
+  "image_url": "/images/characters/워더링하이츠_치프_버틀러_오티스_1772541412.webp?v=1772541412"
+}

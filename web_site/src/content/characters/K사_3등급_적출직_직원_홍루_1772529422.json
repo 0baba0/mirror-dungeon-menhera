@@ -1,0 +1,50 @@
+{
+  "id": "K사_3등급_적출직_직원_홍루_1772529422",
+  "characterName": "홍루",
+  "identityName": "K사 3등급 적출직 직원",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-06-29",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "K사"
+  ],
+  "image_url": "/images/characters/K사_3등급_적출직_직원_홍루_1772529422.webp?v=1772529423"
+}

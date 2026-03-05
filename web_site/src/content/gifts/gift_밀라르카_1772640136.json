@@ -1,0 +1,15 @@
+{
+  "id": "gift_밀라르카_1772640136",
+  "name": "밀라르카",
+  "tier": 2,
+  "category": "출혈",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "target_condition": [],
+  "condition_dependency": "none",
+  "is_ego_gift": false,
+  "effect": "출혈 위력, 출혈 횟수 또는 특수 출혈을 부여하는 스킬의 합 위력 +1.",
+  "image_url": "/images/gifts/gift_밀라르카_1772640136.webp?v=1772640136"
+}

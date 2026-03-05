@@ -1,0 +1,47 @@
+{
+  "id": "쥐는_자_파우스트_1772456274",
+  "characterName": "파우스트",
+  "identityName": "쥐는 자",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-03-23",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "색욕"
+  },
+  "affiliation": [
+    "N사 광신도",
+    "N사"
+  ],
+  "image_url": "/images/characters/쥐는_자_파우스트_1772456274.webp?v=1772456274"
+}

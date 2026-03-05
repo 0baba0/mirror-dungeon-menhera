@@ -1,0 +1,52 @@
+{
+  "id": "홍원_군주_홍루_1772529679",
+  "characterName": "홍루",
+  "identityName": "홍원 군주",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-08-14",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "호흡"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "우울"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "special3": {
+      "type": "참격",
+      "attribute": "오만"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "강화방어",
+    "attribute": "탐식"
+  },
+  "affiliation": [
+    "H사",
+    "가씨 가문"
+  ],
+  "image_url": "/images/characters/홍원_군주_홍루_1772529679.webp?v=1772529680"
+}

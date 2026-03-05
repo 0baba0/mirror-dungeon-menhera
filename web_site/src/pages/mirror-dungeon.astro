@@ -193,12 +193,14 @@ const groupedCharacters = sinnerNames.map(name => {
       let deck = [];
 
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. 우클릭 시 덱에 넣고 빼기
-        document.addEventListener('contextmenu', (e) => {
-          const container = e.target.closest('.cards-container');
-          if (!container) return;
+        // 1. 좌클릭(터치) 시 덱에 넣고 빼기 (모바일/PC 완벽 대응)
+        document.addEventListener('click', (e) => {
+          // 🚀 카드 본체(.card-body-clickable)를 눌렀을 때만 작동!
+          const cardBody = e.target.closest('.card-body-clickable');
+          if (!cardBody) return;
           
-          e.preventDefault(); 
+          const container = cardBody.closest('.cards-container');
+          if (!container) return;
 
           const sinnerGroup = container.closest('.sinner-group');
           const sinnerName = sinnerGroup.getAttribute('data-sinner');

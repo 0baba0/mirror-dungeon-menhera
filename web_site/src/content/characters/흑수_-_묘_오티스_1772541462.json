@@ -1,0 +1,52 @@
+{
+  "id": "흑수_-_묘_오티스_1772541462",
+  "characterName": "오티스",
+  "identityName": "흑수 - 묘",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-03-20",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "흑수",
+    "H사",
+    "흑수 - 묘"
+  ],
+  "image_url": "/images/characters/흑수_-_묘_오티스_1772541462.webp?v=1772541462"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "로보토미_E.G.O초롱_돈키호테_1772466446",
+  "characterName": "돈키호테",
+  "identityName": "로보토미 E.G.O::초롱",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2024-01-11",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "로보토미 본사",
+    "E.G.O 장비"
+  ],
+  "image_url": "/images/characters/로보토미_E.G.O초롱_돈키호테_1772466446.webp?v=1772466447"
+}

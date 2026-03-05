@@ -1,0 +1,52 @@
+{
+  "id": "료.고.파._조수_그레고르_1772541579",
+  "characterName": "그레고르",
+  "identityName": "료.고.파. 조수",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-04-20",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "질투"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "색욕"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "뒷골목",
+    "조직",
+    "료.고.파"
+  ],
+  "image_url": "/images/characters/료.고.파._조수_그레고르_1772541579.webp?v=1772541580"
+}

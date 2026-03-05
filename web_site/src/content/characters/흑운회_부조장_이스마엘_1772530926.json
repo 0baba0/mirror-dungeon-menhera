@@ -1,0 +1,51 @@
+{
+  "id": "흑운회_부조장_이스마엘_1772530926",
+  "characterName": "이스마엘",
+  "identityName": "흑운회 부조장",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-02-06",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "색욕"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "조직",
+    "흑운회"
+  ],
+  "image_url": "/images/characters/흑운회_부조장_이스마엘_1772530926.webp?v=1772530927"
+}

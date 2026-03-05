@@ -1,0 +1,51 @@
+{
+  "id": "20구_유로지비_홍루_1772529452",
+  "characterName": "홍루",
+  "identityName": "20구 유로지비",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-06-13",
+  "imagePosition": "center",
+  "keywords": [
+    "진동"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "탐식"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "나태"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "조직",
+    "유로지비"
+  ],
+  "image_url": "/images/characters/20구_유로지비_홍루_1772529452.webp?v=1772529453"
+}

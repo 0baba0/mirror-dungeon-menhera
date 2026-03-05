@@ -1,0 +1,52 @@
+{
+  "id": "LCCB_대리_이스마엘_1772530775",
+  "characterName": "이스마엘",
+  "identityName": "LCCB 대리",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "진동"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "림버스 컴퍼니",
+    "LCC"
+  ],
+  "image_url": "/images/characters/LCCB_대리_이스마엘_1772530775.webp?v=1772530776"
+}

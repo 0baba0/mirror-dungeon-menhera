@@ -1,0 +1,53 @@
+{
+  "id": "흑수_-_묘_필두_파우스트_1772465672",
+  "characterName": "파우스트",
+  "identityName": "흑수 - 묘 필두",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-05-22",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "참격",
+      "attribute": "탐식"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "강화방어",
+    "attribute": "탐식"
+  },
+  "affiliation": [
+    "흑수",
+    "흑수 - 묘",
+    "흑수 필두",
+    "H사"
+  ],
+  "image_url": "/images/characters/흑수_-_묘_필두_파우스트_1772465672.webp?v=1772465672"
+}

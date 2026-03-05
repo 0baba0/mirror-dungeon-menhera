@@ -1,0 +1,46 @@
+{
+  "id": "W사_3등급_정리_요원_이상_1772449587",
+  "characterName": "이상",
+  "identityName": "W사 3등급 정리 요원",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-11-09",
+  "imagePosition": "center",
+  "keywords": [
+    "충전"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "우울"
+  },
+  "affiliation": [
+    "W사"
+  ],
+  "image_url": "/images/characters/W사_3등급_정리_요원_이상_1772449587.webp?v=1772449587"
+}

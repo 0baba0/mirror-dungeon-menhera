@@ -1,0 +1,13 @@
+{
+  "id": "gift_업화_조각_1772555106",
+  "name": "업화 조각",
+  "tier": 4,
+  "category": "화상",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "is_ego_gift": true,
+  "effect": "화상 위력, 화상 횟수 또는 특수 화상을 부여하는 E.G.O 스킬 사용시 발동.\r\n소모하는 (분노 E.G.O 자원 +나머지 E.G.O 자원의 합/3)만큼 최종 위력이 증가, 피해량 +50%\r\n분노 속성 E.G.O 스킬의 경우, 효과가 강화되어 공격 시작 전에 화상 횟수를 추가로 부여(ZAYIN의 경우 2, 등급이 오를수록 +1)하고 피해량 +(공격 가중치/공격 대상 수×20)%",
+  "image_url": "/images/gifts/gift_업화_조각_1772555106.webp?v=1772555106"
+}

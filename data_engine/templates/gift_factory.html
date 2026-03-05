@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>E.G.O 기프트 데이터 팩토리</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        .left-panel { flex: 1; background: #1e293b; padding: 2rem; overflow-y: auto; border-right: 2px solid #334155; display: flex; flex-direction: column; }
+        .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .filter-btn { background: #334155; color: #ccc; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: #38bdf8; color: #000; font-weight: bold; }
+
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; overflow-y: auto; }
+        .img-card { position: relative; background: #000; padding: 0.5rem; border-radius: 8px; cursor: pointer; border: 2px solid transparent; text-align: center; transition: 0.2s; }
+        .img-card:hover { border-color: #64748b; transform: translateY(-3px); }
+        .img-card.selected { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+        .img-card img { width: 80px; height: 80px; object-fit: contain; border-radius: 4px; pointer-events: none; }
+        .img-name { margin-top: 0.5rem; font-size: 0.75rem; color: #cbd5e1; word-break: break-all; }
+        .badge { position: absolute; top: -5px; right: -5px; background: #4ade80; color: #000; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 10px; }
+
+        .right-panel { width: 500px; background: #0f172a; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+        h2 { color: #38bdf8; margin: 0; border-bottom: 1px solid #334155; padding-bottom: 0.8rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.3rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.6rem; background: #1e293b; color: #fff; border: 1px solid #475569; border-radius: 4px; box-sizing: border-box; font-size: 0.9rem;}
+        textarea { height: 160px; resize: none; }
+        
+        .btn-save { background: #38bdf8; color: #0f172a; padding: 1rem; font-size: 1.1rem; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; transition: 0.2s;}
+        .btn-save:hover { background: #0284c7; color:#fff; }
+        .btn-delete { background: transparent; border: 1px solid #ef4444; color: #ef4444; width: 100%; padding: 0.8rem; cursor: pointer; border-radius: 4px; transition: 0.2s; font-weight: bold; margin-top: 0.5rem;}
+        .btn-delete:hover { background: #ef4444; color: #fff; }
+        
+        .nav-btn { display: inline-block; padding: 0.8rem 1rem; background: #334155; color: #fff; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: bold; text-align: center;}
+        .nav-btn:hover { background: #475569;}
+
+        .input-wrapper { position: relative; }
+        .autocomplete-dropdown { 
+            position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px; 
+            overflow-y: auto; background: #1e293b; border: 1px solid #38bdf8; 
+            border-radius: 0 0 6px 6px; z-index: 1000; display: none; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        }
+        .autocomplete-item { 
+            padding: 0.6rem 0.8rem; cursor: pointer; color: #cbd5e1; 
+            border-bottom: 1px solid #334155; transition: 0.1s; font-size: 0.85rem;
+        }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item:hover { background: #38bdf8; color: #000; font-weight: bold; }
+        
+        .parser-box { background: #0f172a; padding: 1.5rem; border-radius: 8px; border: 1px solid #38bdf8; margin-bottom: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="left-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="border:none; margin:0;">🎁 E.G.O 기프트 목록</h2>
+            <a href="/" class="nav-btn">◀ 인격 팩토리로 이동</a>
+        </div>
+        
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterList('all', this)">전체보기</button>
+            <button class="filter-btn" onclick="filterList('unlinked', this)" style="color:#ef4444;">미입력만</button>
+            <button class="filter-btn" onclick="filterList('linked', this)" style="color:#4ade80;">완료됨</button>
+        </div>
+
+        <div class="image-grid" id="image-grid">
+            {% for img in images %}
+            <div class="img-card {{ 'linked' if img.has_data else 'unlinked' }}" onclick="selectImage('{{ img.filename }}', this)">
+                <img src="/gifts/{{ img.filename }}" alt="gift">
+                <div class="img-name">{{ img.display_name if img.has_data else img.filename }}</div>
+                {% if img.has_data %}<div class="badge">✅</div>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="right-panel">
+        
+        <div class="parser-box">
+            <h3 style="color: #38bdf8; margin-top: 0; margin-bottom: 0.8rem; font-size: 1.1rem;">⚡ 위키 텍스트 자동 추출기</h3>
+            <textarea id="raw_text" placeholder="나무위키 표 내용을 복사해서 붙여넣으세요... (예: Ⅲ 요리 비법 전서...)" style="width: 100%; height: 80px; padding: 0.8rem; background: #1e293b; color: #fff; border: 1px solid #475569; border-radius: 4px; box-sizing: border-box; resize: none; margin-bottom: 0.5rem; font-size: 0.9rem;"></textarea>
+            <button type="button" onclick="runGiftParser()" style="width: 100%; padding: 0.8rem; background: #38bdf8; color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s;">✨ 텍스트 분석 및 폼 채우기</button>
+            <div id="parse_msg" style="margin-top: 0.8rem; font-size: 0.85rem; color: #38bdf8; text-align: center;">기프트 글자를 붙여넣고 버튼을 누르세요.</div>
+        </div>
+
+        <h2>기프트 데이터 입력</h2>
+        
+        <form action="/save_gift" method="POST" id="gift-form">
+            <input type="hidden" name="gift_id" id="h_gift_id" value="">
+            <input type="hidden" name="img_filename" id="h_img_filename" value="">
+
+            <div class="form-group">
+                <label>기프트 이름</label>
+                <input type="text" name="name" id="f_name" placeholder="예: 작열하는 우모" required autocomplete="off">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label>기프트 등급 (Tier)</label>
+                    <select name="tier" id="f_tier">
+                        <option value="1">1등급</option>
+                        <option value="2">2등급</option>
+                        <option value="3">3등급</option>
+                        <option value="4">4등급</option>
+                        <option value="5" style="color: #eab308; font-weight:bold;">5등급 (조합 등)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>메인 속성 / 키워드</label>
+                    <select name="category" id="f_category">
+                        <option value="범용" style="font-weight:bold;">✨ 범용 (공용)</option>
+                        <optgroup label="--- 공격 속성 ---">
+                            <option value="참격" style="color: #ef4444;">참격</option>
+                            <option value="관통" style="color: #eab308;">관통</option>
+                            <option value="타격" style="color: #3b82f6;">타격</option>
+                        </optgroup>
+                        <optgroup label="--- 상태이상 키워드 ---">
+                            <option value="화상">화상</option>
+                            <option value="출혈">출혈</option>
+                            <option value="진동">진동</option>
+                            <option value="파열">파열</option>
+                            <option value="침잠">침잠</option>
+                            <option value="호흡">호흡</option>
+                            <option value="충전">충전</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid #38bdf8; border-radius: 6px; padding: 10px; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label style="color:#38bdf8;">🔗 공명 발동 조건</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="resonance_condition" id="f_res_cond" placeholder="예: 분노 완전 공명" autocomplete="off" style="border-color: #0284c7;">
+                            <div id="dropdown_res_cond" class="autocomplete-dropdown"></div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label style="color:#38bdf8;">👥 인격 편성 조건 (소속 포함)</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="identity_condition" id="f_id_cond" placeholder="예: 화상 5인 이상, 흑수" autocomplete="off" style="border-color: #0284c7;">
+                            <div id="dropdown_id_cond" class="autocomplete-dropdown"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0.5rem;">
+                    <label style="color:#38bdf8;">🎯 적용 대상 / 편성 순서 (클릭하여 검색)</label>
+                    <div class="input-wrapper">
+                        <input type="text" name="target_condition" id="f_target_cond" placeholder="예: 편성 1번, 속도가 가장 빠른 아군" autocomplete="off" style="border-color: #0284c7;">
+                        <div id="dropdown_target_cond" class="autocomplete-dropdown"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0; margin-top: 10px; border-top: 1px dashed #334155; padding-top: 10px;">
+                    <label style="color:#eab308;">⚖️ 위 조건들의 의존도 (테마 팩 구축 시 기프트 가치 판단용)</label>
+                    <select name="condition_dependency" id="f_cond_dep" style="border-color: #ca8a04;">
+                        <option value="none">조건 없음 (해당 없음)</option>
+                        <option value="strict" style="color:#ef4444; font-weight:bold;">🔴 조건 필수 (미달성 시 아예 발동 안 함 / 깡통됨)</option>
+                        <option value="bonus" style="color:#4ade80; font-weight:bold;">🟢 조건 선택 (미달성해도 기본 효과는 있음 / 보너스)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>기프트 특수 조건 키워드 (클릭하여 검색)</label>
+                <div class="input-wrapper">
+                    <input type="text" name="special_keywords" id="f_sp_kw" placeholder="클릭해서 스크롤로 찾거나 타이핑하여 검색" autocomplete="off">
+                    <div id="dropdown_sp_kw" class="autocomplete-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="form-group" style="border: 1px dashed #eab308; padding: 10px; border-radius: 6px; background: rgba(234, 179, 8, 0.05);">
+                <label style="color:#eab308;">🛠️ 조합 재료 기프트 (클릭하여 검색)</label>
+                <div class="input-wrapper">
+                    <input type="text" name="materials" id="f_materials" placeholder="클릭해서 스크롤로 찾거나 타이핑하여 검색" autocomplete="off" style="border-color: #ca8a04;">
+                    <div id="dropdown_materials" class="autocomplete-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>기프트 효과 설명 (위키 내용 통째로 보존)</label>
+                <textarea name="effect" id="f_effect" placeholder="기프트 효과를 있는 그대로 입력하세요..."></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.6rem; color: #a78bfa; font-weight: bold; cursor: pointer; background: rgba(167, 139, 250, 0.1); padding: 0.8rem; border-radius: 6px; border: 1px solid #8b5cf6;">
+                    <input type="checkbox" name="is_ego_gift" id="f_is_ego" style="width: auto;"> 
+                    🔮 E.G.O 전용/적용 기프트 (에고 자원 관련, 에고 위력 증가 등)
+                </label>
+            </div>
+
+            <button type="submit" class="btn-save">💾 이 기프트 데이터 저장</button>
+            <button type="button" class="btn-delete" onclick="if(confirm('이 기프트와 이미지를 완전히 삭제하시겠습니까?')) document.getElementById('delete-form').submit();">🗑️ 기프트 완전 삭제</button>
+        </form>
+
+        <form id="delete-form" action="/delete_gift" method="POST" style="display:none;">
+            <input type="hidden" name="img_filename" id="del_img_filename">
+            <input type="hidden" name="gift_id" id="del_gift_id">
+        </form>
+    </div>
+
+    <script>
+        const affData = {{ rec_affiliations | tojson | safe }}; 
+        const kwData = {{ rec_keywords | tojson | safe }};
+        const giftList = {{ rec_gifts | tojson | safe }}; 
+        
+        const resCondList = [
+            '분노 완전 공명', '색욕 완전 공명', '나태 완전 공명', '탐식 완전 공명', 
+            '우울 완전 공명', '오만 완전 공명', '질투 완전 공명'
+        ];
+
+        const idCondBaseList = [
+            '화상 5인 이상', '출혈 5인 이상', '진동 5인 이상', '파열 5인 이상', 
+            '침잠 5인 이상', '호흡 5인 이상', '충전 5인 이상'
+        ];
+        const idCondList = [...idCondBaseList, ...affData]; 
+
+        // 🚀 신규: 적용 대상 (편성 순서 등) 자동완성 목록
+        const targetCondList = [
+            '편성 1번', '편성 2번', '편성 3번', '편성 4번', '편성 5번', '편성 6번',
+            '편성 1~2번', '편성 3~4번', '편성 3~5번', '편성 3~6번', '편성 4~6번',
+            '가장 속도가 빠른 아군', '가장 속도가 느린 아군',
+            '체력이 가장 낮은 아군', '체력이 가장 높은 아군',
+            '정신력이 가장 낮은 아군', '정신력이 가장 높은 아군'
+        ];
+
+        const giftDataMap = {
+            {% for img in images %}
+            "{{ img.filename }}": {{ img.json_data | tojson | safe }},
+            {% endfor %}
+        };
+
+        function setupAutocomplete(inputId, dropdownId, dataList, isCommaSeparated=true) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+
+            function showDropdown() {
+                const val = input.value;
+                let currentPart = val.trim();
+                let parts = [val];
+
+                if (isCommaSeparated) {
+                    parts = val.split(',');
+                    currentPart = parts[parts.length - 1].trim(); 
+                }
+                
+                dropdown.innerHTML = '';
+                const matches = currentPart === '' 
+                    ? dataList 
+                    : dataList.filter(item => item.toLowerCase().includes(currentPart.toLowerCase()));
+                
+                if (matches.length > 0) {
+                    dropdown.style.display = 'block';
+                    matches.forEach(match => {
+                        const div = document.createElement('div');
+                        div.className = 'autocomplete-item';
+                        
+                        if (currentPart !== '') {
+                            const regex = new RegExp(`(${currentPart})`, "gi");
+                            div.innerHTML = match.replace(regex, `<span style="color:#38bdf8; font-weight:bold;">$1</span>`);
+                        } else {
+                            if(match.includes('5인 이상') || match.includes('편성')) {
+                                div.innerHTML = `<span style="color:#eab308;">${match}</span>`;
+                            } else {
+                                div.innerHTML = match;
+                            }
+                        }
+                        
+                        div.onmousedown = function(e) {
+                            e.preventDefault(); 
+                            if (isCommaSeparated) {
+                                parts[parts.length - 1] = (parts.length > 1 ? ' ' : '') + match; 
+                                input.value = parts.join(', '); 
+                            } else {
+                                input.value = match; 
+                            }
+                            dropdown.style.display = 'none';
+                            input.focus(); 
+                        };
+                        dropdown.appendChild(div);
+                    });
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            }
+
+            input.addEventListener('input', showDropdown);
+            input.addEventListener('focus', showDropdown);
+
+            document.addEventListener('mousedown', function(e) {
+                if (e.target !== input && !dropdown.contains(e.target)) { 
+                    dropdown.style.display = 'none'; 
+                }
+            });
+        }
+
+        setupAutocomplete('f_res_cond', 'dropdown_res_cond', resCondList, false); 
+        setupAutocomplete('f_id_cond', 'dropdown_id_cond', idCondList, true);     
+        setupAutocomplete('f_target_cond', 'dropdown_target_cond', targetCondList, true); // 🚀 편성 대상 자동완성 장착
+        setupAutocomplete('f_sp_kw', 'dropdown_sp_kw', kwData, true);
+        setupAutocomplete('f_materials', 'dropdown_materials', giftList, true);
+
+        function filterList(type, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            document.querySelectorAll('.img-card').forEach(card => {
+                if(type === 'all') card.style.display = 'block';
+                else if(type === 'unlinked') card.style.display = card.classList.contains('unlinked') ? 'block' : 'none';
+                else if(type === 'linked') card.style.display = card.classList.contains('linked') ? 'block' : 'none';
+            });
+        }
+
+        function selectImage(filename, cardElement) {
+            document.querySelectorAll('.img-card').forEach(el => el.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            
+            const giftId = filename.substring(0, filename.lastIndexOf('.')) || filename;
+            document.getElementById('h_img_filename').value = filename;
+            document.getElementById('h_gift_id').value = giftId;
+            document.getElementById('del_img_filename').value = filename;
+            document.getElementById('del_gift_id').value = giftId;
+
+            const jsonData = giftDataMap[filename] || {};
+            
+            if (Object.keys(jsonData).length > 0) {
+                document.getElementById('f_name').value = jsonData.name || '';
+                document.getElementById('f_tier').value = jsonData.tier || 1;
+                document.getElementById('f_category').value = jsonData.category || '범용';
+                
+                document.getElementById('f_res_cond').value = jsonData.resonance_condition || '';
+                
+                let loadedIdCond = jsonData.identity_condition ? jsonData.identity_condition.join(', ') : '';
+                if (!loadedIdCond && jsonData.affiliation && jsonData.affiliation.length > 0) {
+                    loadedIdCond = jsonData.affiliation.join(', ');
+                }
+                document.getElementById('f_id_cond').value = loadedIdCond;
+                
+                // 🚀 저장된 대상/편성 조건 로드
+                document.getElementById('f_target_cond').value = (jsonData.target_condition || []).join(', ');
+                
+                document.getElementById('f_cond_dep').value = jsonData.condition_dependency || 'none';
+                document.getElementById('f_sp_kw').value = (jsonData.special_keywords || []).join(', ');
+                document.getElementById('f_materials').value = (jsonData.materials || []).join(', ');
+                document.getElementById('f_effect').value = jsonData.effect || '';
+                
+                document.getElementById('f_is_ego').checked = jsonData.is_ego_gift || false;
+
+            } else {
+                document.getElementById('gift-form').reset();
+                document.getElementById('h_img_filename').value = filename; 
+                document.getElementById('h_gift_id').value = giftId;
+                document.getElementById('f_cond_dep').value = 'none'; 
+                document.getElementById('f_is_ego').checked = false;
+            }
+        }
+        
+        async function runGiftParser() {
+            if (!document.getElementById('h_img_filename').value) {
+                alert("왼쪽 목록에서 데이터를 넣을 이미지를 먼저 클릭해주세요!");
+                return;
+            }
+
+            const rawInput = document.getElementById('raw_text').value.trim();
+            const msgBox = document.getElementById('parse_msg');
+            
+            if (!rawInput) {
+                msgBox.style.color = "#ef4444";
+                msgBox.innerText = "텍스트를 먼저 붙여넣어 주세요!";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('raw_text', rawInput);
+            msgBox.style.color = "#38bdf8";
+            msgBox.innerText = "📝 추출 중...";
+
+            try {
+                const response = await fetch('/api/parse_gift_text', { method: 'POST', body: formData });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    const d = res.data;
+                    
+                    if(d.name) document.getElementById('f_name').value = d.name;
+                    if(d.tier) document.getElementById('f_tier').value = d.tier;
+                    
+                    if(d.category) {
+                        const catOptions = Array.from(document.getElementById('f_category').options).map(o => o.value);
+                        document.getElementById('f_category').value = catOptions.includes(d.category) ? d.category : '범용';
+                    }
+                    
+                    if(d.materials && d.materials.length > 0) {
+                        document.getElementById('f_materials').value = d.materials.join(', '); 
+                    }
+                    
+                    if(d.effect) {
+                        document.getElementById('f_effect').value = d.effect;
+                    }
+                    
+                    msgBox.style.color = "#4ade80";
+                    msgBox.innerText = "✅ 기프트 추출 성공! 수정 후 저장해주세요.";
+                } else {
+                    msgBox.style.color = "#ef4444";
+                    msgBox.innerText = "❌ 추출 실패: " + res.message;
+                }
+            } catch (e) {
+                msgBox.style.color = "#ef4444";
+                msgBox.innerText = "❌ 서버 에러 발생.";
+            }
+        }
+
+        document.getElementById('gift-form').addEventListener('submit', function(e) {
+            if (!document.getElementById('h_img_filename').value) {
+                e.preventDefault();
+                alert("왼쪽 목록에서 데이터를 입력할 기프트 이미지를 먼저 선택해주세요!");
+            }
+        });
+    </script>
+</body>
+</html>

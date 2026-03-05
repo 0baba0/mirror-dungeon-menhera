@@ -1,0 +1,19 @@
+{
+  "id": "gift_요리_비법_전서_1772590001",
+  "name": "요리 비법 전서",
+  "tier": 3,
+  "category": "화상",
+  "special_keywords": [],
+  "materials": [
+    "만년 동안 끓는 솥",
+    "융해된 파라핀"
+  ],
+  "resonance_condition": "",
+  "identity_condition": [
+    "화상 5인 이상"
+  ],
+  "condition_dependency": "strict",
+  "is_ego_gift": false,
+  "effect": "턴 시작 시, 화상 위력, 화상 횟수 또는 특수 화상을 부여하는 공격 스킬을 보유한 인격이 5인 이상이면, 이번 전투 동안 발동 (E.G.O 스킬 제외. 대기 인원 제외)\r\n화상 위력, 화상 횟수 또는 특수 화상을 부여하는 스킬의 최종 위력 +1\r\n화상 위력, 화상 횟수 또는 특수 화상을 부여하는 스킬로 합 승리 시, (남은 코인 수/2+1)만큼 대상 적에게 화상 위력을 부여",
+  "image_url": "/images/gifts/gift_요리_비법_전서_1772590001.webp?v=1772590001"
+}

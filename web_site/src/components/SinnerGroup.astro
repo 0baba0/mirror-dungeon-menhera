@@ -14,7 +14,7 @@ if (defaultIndex === -1) defaultIndex = 0;
     <span class="count">보유 인격: {identities.length}</span>
   </div>
 
-  <div class="cards-container" title="우클릭: 편성 / 좌클릭: 인격 변경" style="cursor: pointer;">
+  <div class="cards-container">
     <div class="deck-order-badge hidden">0</div>
 
     {identities.map((identity: any, index: number) => (
@@ -22,118 +22,121 @@ if (defaultIndex === -1) defaultIndex = 0;
            data-index={index}
            data-id={identity.data.identityName}
            data-keywords={identity.data.keywords ? identity.data.keywords.join(',') : ''}>
-        <CharacterCard character={identity} />
+        
+        <button class="change-id-btn">🔄 인격/E.G.O 변경</button>
+        
+        <div class="card-body-clickable">
+          <CharacterCard character={identity} />
+        </div>
       </div>
     ))}
-    <div class="click-hint">🔄 좌클릭: 인격 변경</div>
   </div>
 
   <div class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h4>{name} 인격 편성</h4>
+        <h4>{name} 셋업</h4>
         <button class="close-btn">✖</button>
       </div>
       
-      <div class="search-box">
-        <input type="text" class="search-input" placeholder="🔍 인격 이름, 키워드, 소속 검색..." />
-      </div>
-
-      <div class="modal-grid">
-        {identities.map((identity: any, index: number) => {
-          const kwStr = identity.data.keywords ? identity.data.keywords.join(' ').toLowerCase() : '';
-          const affStr = identity.data.affiliation ? identity.data.affiliation.join(' ').toLowerCase() : '';
-          const nameStr = identity.data.identityName.toLowerCase();
-          
-          return (
-            <button 
-              class={`modal-id-btn ${index === defaultIndex ? 'selected' : ''}`} 
-              data-index={index} 
-              data-search={`${nameStr} ${kwStr} ${affStr}`}
-              title={identity.data.identityName}
-            >
-              <img src={identity.data.image_url} alt={identity.data.identityName} loading="lazy" />
-              <div class="btn-info">
-                <span class="grade-badge">{"★".repeat(identity.data.grade)}</span>
-                <span class="id-name">{identity.data.identityName}</span>
-              </div>
-            </button>
-          )
-        })}
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-target="id-tab">인격</button>
+        <button class="tab-btn" data-target="ego-tab">E.G.O</button>
       </div>
       
-      <div class="no-results hidden">검색 결과가 없습니다.</div>
+      <div id="id-tab" class="tab-content active">
+        <div class="search-box">
+          <input type="text" class="search-input" placeholder="🔍 인격 이름, 키워드, 소속 검색..." />
+        </div>
+        <div class="modal-grid">
+          {identities.map((identity: any, index: number) => {
+            const kwStr = identity.data.keywords ? identity.data.keywords.join(' ').toLowerCase() : '';
+            const affStr = identity.data.affiliation ? identity.data.affiliation.join(' ').toLowerCase() : '';
+            const nameStr = identity.data.identityName.toLowerCase();
+            
+            return (
+              <button 
+                class={`modal-id-btn ${index === defaultIndex ? 'selected' : ''}`} 
+                data-index={index} 
+                data-search={`${nameStr} ${kwStr} ${affStr}`}
+                title={identity.data.identityName}
+              >
+                <img src={identity.data.image_url} alt={identity.data.identityName} loading="lazy" />
+                <div class="btn-info">
+                  <span class="grade-badge">{"★".repeat(identity.data.grade)}</span>
+                  <span class="id-name">{identity.data.identityName}</span>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+        <div class="no-results hidden">검색 결과가 없습니다.</div>
+      </div>
+
+      <div id="ego-tab" class="tab-content hidden">
+        <div style="padding: 3rem; text-align: center; color: #888;">
+          <p>E.G.O 장착 기능은 개발 중입니다.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <style>
-  /* 🚀 기존 스타일 유지 + 뱃지 스타일 추가 */
-  .sinner-group {
-    display: flex; flex-direction: column; gap: 1rem;
-    background: #1a1a1a; padding: 1.2rem;
-    border-radius: 12px; border: 1px solid #333;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  }
-  
-  .sinner-header {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-bottom: 2px solid #333; padding-bottom: 0.5rem;
-  }
+  /* 기본 스타일 유지 */
+  .sinner-group { display: flex; flex-direction: column; gap: 1rem; background: #1a1a1a; padding: 1.2rem; border-radius: 12px; border: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+  .sinner-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
   .sinner-header h3 { margin: 0; color: #fff; font-size: 1.3rem; }
   .sinner-header .count { margin: 0; color: #888; font-size: 0.85rem; }
-
   .cards-container { position: relative; transition: 0.2s; }
   .cards-container:hover { transform: scale(1.02); }
-  .cards-container:hover .click-hint { opacity: 1; }
   
-  /* 🚀 편성 순서를 보여줄 예쁜 뱃지 디자인 */
-  .deck-order-badge {
-    position: absolute; top: -10px; left: -10px;
-    background: #eab308; color: #000;
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 1.2rem; z-index: 50;
-    border: 3px solid #1a1a1a; box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    transition: 0.2s;
+  /* 🚀 카드 내 클릭 영역 분리 스타일 */
+  .card-wrapper { position: relative; border-radius: 8px; overflow: hidden; }
+  .change-id-btn {
+    position: absolute; top: 0; left: 0; width: 100%; height: 35px;
+    background: rgba(0, 0, 0, 0.7); color: #eab308; border: none;
+    font-size: 0.85rem; font-weight: bold; cursor: pointer; z-index: 20;
+    transition: 0.2s; opacity: 0; /* 평소엔 숨김 */
   }
+  .cards-container:hover .change-id-btn { opacity: 1; } /* 마우스 올리면 나타남 */
+  .change-id-btn:hover { background: rgba(234, 179, 8, 0.9); color: #000; }
+  .card-body-clickable { cursor: pointer; } /* 카드 본체는 편성용 클릭 포인터 */
 
-  .click-hint {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(0,0,0,0.7); color: #eab308;
-    padding: 0.4rem 0.8rem; border-radius: 20px;
-    font-size: 0.8rem; font-weight: bold; opacity: 0;
-    transition: 0.2s; pointer-events: none; z-index: 10;
-  }
-
+  .deck-order-badge { position: absolute; top: -10px; left: -10px; background: #eab308; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; z-index: 50; border: 3px solid #1a1a1a; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
   .hidden { display: none !important; }
   .active { display: block; animation: fadeIn 0.3s ease-out; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-  /* 기존 모달 스타일 유지... (길어서 생략했지만 기존 코드 그대로 쓰시면 됩니다!) */
-  /* (여기에 선생님의 기존 .modal-overlay 등의 CSS가 들어갑니다) */
+  /* 🚀 모달 및 탭 디자인 */
   .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
-  .modal-content { background: #121212; border: 2px solid #eab308; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-content { background: #121212; border: 2px solid #eab308; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); overflow: hidden; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem; border-bottom: 1px solid #333; }
   .modal-header h4 { margin: 0; color: #eab308; font-size: 1.2rem; }
   .close-btn { background: transparent; border: none; color: #888; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
   .close-btn:hover { color: #fff; transform: scale(1.2); }
+  
+  .modal-tabs { display: flex; background: #1a1a1a; border-bottom: 2px solid #333; }
+  .tab-btn { flex: 1; padding: 1rem; background: transparent; border: none; color: #888; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
+  .tab-btn:hover { color: #fff; background: #222; }
+  .tab-btn.active { color: #eab308; border-bottom-color: #eab308; background: #222; }
+  .tab-content { display: none; flex-direction: column; overflow-y: auto; max-height: 60vh; }
+  .tab-content.active { display: flex; }
+
   .search-box { padding: 1rem 1.2rem; }
   .search-input { width: 100%; padding: 0.8rem 1rem; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
   .search-input:focus { outline: none; border-color: #eab308; }
-  .modal-grid { padding: 0 1.2rem 1.2rem 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; overflow-y: auto; }
-  .modal-grid::-webkit-scrollbar { width: 8px; }
-  .modal-grid::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
-  .modal-grid::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-  .modal-grid::-webkit-scrollbar-thumb:hover { background: #666; }
+  .modal-grid { padding: 0 1.2rem 1.2rem 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; }
   .modal-id-btn { background: #000; border: 2px solid #333; border-radius: 8px; padding: 0; cursor: pointer; position: relative; overflow: hidden; height: 120px; transition: 0.2s; display: flex; flex-direction: column; }
   .modal-id-btn:hover { border-color: #888; transform: translateY(-3px); }
   .modal-id-btn.selected { border-color: #eab308; box-shadow: 0 0 15px rgba(234,179,8,0.4); }
-  .modal-id-btn img { width: 100%; height: 75%; object-fit: cover; }
+  .modal-id-btn img {
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+    object-position: top center; /* 🚀 새로 추가! (위쪽 중앙을 기준으로 보여줌) */
+  }
   .btn-info { height: 25%; background: #1a1a1a; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .grade-badge { color: #eab308; font-size: 0.6rem; letter-spacing: 1px; }
   .id-name { color: #ccc; font-size: 0.7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 90%; }
@@ -145,27 +148,50 @@ if (defaultIndex === -1) defaultIndex = 0;
     const groups = document.querySelectorAll('.sinner-group');
     
     groups.forEach(group => {
-      // 변수 선언들... (기존과 동일)
-      const cardsContainer = group.querySelector('.cards-container');
       const modal = group.querySelector('.modal-overlay');
       const closeBtn = group.querySelector('.close-btn');
       const searchInput = group.querySelector('.search-input');
       const modalBtns = group.querySelectorAll('.modal-id-btn');
       const wrappers = group.querySelectorAll('.card-wrapper');
       const noResults = group.querySelector('.no-results');
+      const changeIdBtns = group.querySelectorAll('.change-id-btn');
+      const tabBtns = group.querySelectorAll('.tab-btn');
+      const tabContents = group.querySelectorAll('.tab-content');
 
-      cardsContainer.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-        searchInput.value = ''; searchInput.focus();
-        modalBtns.forEach(btn => btn.style.display = 'flex');
-        noResults.classList.add('hidden');
+      // 🚀 1. 상단 반투명 버튼 클릭 시 모달 열기
+      changeIdBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // 부모(카드 본체)로 클릭 이벤트가 넘어가는 것 방지
+          modal.classList.remove('hidden');
+          searchInput.value = ''; searchInput.focus();
+          modalBtns.forEach(b => b.style.display = 'flex');
+          noResults.classList.add('hidden');
+        });
       });
 
+      // 🚀 2. 모달 내 탭 전환 로직
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // 모든 탭 버튼과 컨텐츠 비활성화
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => { c.classList.remove('active'); c.classList.add('hidden'); });
+          
+          // 누른 탭 활성화
+          btn.classList.add('active');
+          const targetId = btn.getAttribute('data-target');
+          const targetContent = group.querySelector(`#${targetId}`);
+          targetContent.classList.remove('hidden');
+          targetContent.classList.add('active');
+        });
+      });
+
+      // 모달 닫기
       closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
       modal.addEventListener('click', (e) => {
         if(e.target === modal) modal.classList.add('hidden');
       });
 
+      // 검색 로직
       searchInput.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase().trim();
         let visibleCount = 0;
@@ -178,6 +204,7 @@ if (defaultIndex === -1) defaultIndex = 0;
         else noResults.classList.add('hidden');
       });
 
+      // 인격 변경
       modalBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('hidden'); });
@@ -191,7 +218,6 @@ if (defaultIndex === -1) defaultIndex = 0;
           btn.classList.add('selected');
           modal.classList.add('hidden');
 
-          // 🚀 핵심: 인격이 바뀌었다고 바깥(거울던전 페이지)에 신호를 보냅니다!
           document.dispatchEvent(new CustomEvent('deck-updated'));
         });
       });

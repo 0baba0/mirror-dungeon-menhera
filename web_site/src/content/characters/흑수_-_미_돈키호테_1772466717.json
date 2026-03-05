@@ -1,0 +1,53 @@
+{
+  "id": "흑수_-_미_돈키호테_1772466717",
+  "characterName": "돈키호테",
+  "identityName": "흑수 - 미",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-11-20",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "흑수",
+    "H사",
+    "흑수 - 미"
+  ],
+  "image_url": "/images/characters/흑수_-_미_돈키호테_1772466717.webp?v=1772466717"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "동부_엄지_카포_IIII_뫼르소_1772529192",
+  "characterName": "뫼르소",
+  "identityName": "동부 엄지 카포 IIII",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2025-06-19",
+  "imagePosition": "center",
+  "keywords": [
+    "화상",
+    "진동"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "분노"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "타격",
+      "attribute": "분노"
+    }
+  },
+  "defense": {
+    "type": "강화반격",
+    "attribute": "나태"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "엄지",
+    "손가락",
+    "카포 IIII"
+  ],
+  "image_url": "/images/characters/동부_엄지_카포_IIII_뫼르소_1772529192.webp?v=1772529192"
+}

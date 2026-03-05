@@ -1,0 +1,50 @@
+{
+  "id": "G사_일등대리_그레고르_1772548154",
+  "characterName": "그레고르",
+  "identityName": "G사 일등대리",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "참격",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "탐식"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "G사"
+  ],
+  "image_url": "/images/characters/G사_일등대리_그레고르_1772548154.webp?v=1772548154"
+}

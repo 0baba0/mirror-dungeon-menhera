@@ -1,0 +1,48 @@
+{
+  "id": "살아남은_로보토미_직원_파우스트_1772451884",
+  "characterName": "파우스트",
+  "identityName": "살아남은 로보토미 직원",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-02-27",
+  "imagePosition": "center",
+  "keywords": [
+    "호흡",
+    "파열"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "참격",
+      "attribute": "색욕"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "참격",
+      "attribute": "질투"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "질투"
+  },
+  "affiliation": [
+    "로보토미 지부",
+    "해결사"
+  ],
+  "image_url": "/images/characters/살아남은_로보토미_직원_파우스트_1772451884.webp?v=1772451884"
+}

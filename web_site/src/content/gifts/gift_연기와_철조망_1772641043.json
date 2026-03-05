@@ -1,0 +1,15 @@
+{
+  "id": "gift_연기와_철조망_1772641043",
+  "name": "연기와 철조망",
+  "tier": 3,
+  "category": "출혈",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "target_condition": [],
+  "condition_dependency": "none",
+  "is_ego_gift": false,
+  "effect": "기본 효과\r\n아군이 스킬 효과로 적에게 부여하는 출혈 위력 수치가 2배로 적용.\r\n턴 종료 시 출혈 상태인 적들이 다음 턴에 속도가 2만큼 감소.\r\n+\r\n아군이 스킬 효과로 적에게 부여하는 출혈 위력 수치가 2배로 적용.\r\n턴 종료 시 출혈 상태인 적들이 다음 턴에 속도가 3만큼 감소.\r\n++\r\n아군이 스킬 효과로 적에게 부여하는 출혈 위력 수치가 2.5배로 적용.\r\n턴 종료 시 출혈 상태인 적들이 다음 턴에 속도가 3만큼 감소.",
+  "image_url": "/images/gifts/gift_연기와_철조망_1772641043.webp?v=1772641043"
+}

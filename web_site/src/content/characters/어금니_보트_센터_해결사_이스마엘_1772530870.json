@@ -1,0 +1,52 @@
+{
+  "id": "어금니_보트_센터_해결사_이스마엘_1772530870",
+  "characterName": "이스마엘",
+  "identityName": "어금니 보트 센터 해결사",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2023-07-27",
+  "imagePosition": "center",
+  "keywords": [
+    "진동",
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "나태"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "회피",
+    "attribute": "오만"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "해결사",
+    "어금니 사무소"
+  ],
+  "image_url": "/images/characters/어금니_보트_센터_해결사_이스마엘_1772530870.webp?v=1772530871"
+}

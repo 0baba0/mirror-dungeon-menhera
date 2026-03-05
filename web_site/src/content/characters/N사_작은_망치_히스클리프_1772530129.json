@@ -1,0 +1,51 @@
+{
+  "id": "N사_작은_망치_히스클리프_1772530129",
+  "characterName": "히스클리프",
+  "identityName": "N사 작은 망치",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-03-23",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "우울"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "N사 광신도",
+    "N사"
+  ],
+  "image_url": "/images/characters/N사_작은_망치_히스클리프_1772530129.webp?v=1772530129"
+}

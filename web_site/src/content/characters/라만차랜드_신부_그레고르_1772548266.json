@@ -1,0 +1,53 @@
+{
+  "id": "라만차랜드_신부_그레고르_1772548266",
+  "characterName": "그레고르",
+  "identityName": "라만차랜드 신부",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-10-31",
+  "imagePosition": "center",
+  "keywords": [
+    "파열",
+    "출혈"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "탐식"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "색욕"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "라만차랜드",
+    "혈귀",
+    "제3권속"
+  ],
+  "image_url": "/images/characters/라만차랜드_신부_그레고르_1772548266.webp?v=1772548266"
+}

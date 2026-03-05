@@ -1,0 +1,51 @@
+{
+  "id": "로보토미_E.G.O엄숙한_애도_이상_1772466218",
+  "characterName": "이상",
+  "identityName": "로보토미 E.G.O::엄숙한 애도",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-09-05",
+  "imagePosition": "center",
+  "keywords": [
+    "침잠"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "관통",
+      "attribute": "오만"
+    },
+    "skill2": {
+      "type": "관통",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "관통",
+      "attribute": "나태"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "우울"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "로보토미 본사",
+    "E.G.O 장비"
+  ],
+  "image_url": "/images/characters/로보토미_E.G.O엄숙한_애도_이상_1772466218.webp?v=1772466219"
+}

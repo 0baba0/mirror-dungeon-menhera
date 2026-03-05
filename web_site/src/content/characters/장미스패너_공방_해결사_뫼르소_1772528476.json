@@ -1,0 +1,52 @@
+{
+  "id": "장미스패너_공방_해결사_뫼르소_1772528476",
+  "characterName": "뫼르소",
+  "identityName": "장미스패너 공방 해결사",
+  "isDefault": false,
+  "grade": 2,
+  "releaseDate": "2023-06-01",
+  "imagePosition": "center",
+  "keywords": [
+    "충전",
+    "진동"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "오만"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "나태"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "없음",
+      "attribute": "없음"
+    }
+  },
+  "defense": {
+    "type": "가드",
+    "attribute": "나태"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "해결사",
+    "장미스패너 공방"
+  ],
+  "image_url": "/images/characters/장미스패너_공방_해결사_뫼르소_1772528476.webp?v=1772528477"
+}

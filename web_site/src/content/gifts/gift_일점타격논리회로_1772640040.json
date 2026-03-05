@@ -1,0 +1,15 @@
+{
+  "id": "gift_일점타격논리회로_1772640040",
+  "name": "일점타격논리회로",
+  "tier": 2,
+  "category": "화상",
+  "special_keywords": [],
+  "materials": [],
+  "resonance_condition": "",
+  "identity_condition": [],
+  "target_condition": [],
+  "condition_dependency": "none",
+  "is_ego_gift": false,
+  "effect": "화상 위력 또는 특수 화상을 부여하는 스킬 또는 질투 속성 스킬을 사용하여 적에게 적중 시, 대상에게 해당 스킬의 코인 수 절반만큼 추가로 화상 위력 부여. (소수는 올림하여 계산)\r\n- [중첩 발동 불가] 입주 신고 히스클리프 E.G.O 패시브 「회로 연결」 발동 시, 이 효과가 발동하지 않음.\r\n적중시 대상의 화상 위력이 99면, 주민등록 마이크로칩 1 부여 (적당 1회, 턴당 3회)",
+  "image_url": "/images/gifts/gift_일점타격논리회로_1772640040.webp?v=1772640040"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "로보토미_E.G.O적안_·_참회_료슈_1772466961",
+  "characterName": "료슈",
+  "identityName": "로보토미 E.G.O::적안 · 참회",
+  "isDefault": false,
+  "grade": 3,
+  "releaseDate": "2024-09-05",
+  "imagePosition": "center",
+  "keywords": [
+    "출혈",
+    "충전"
+  ],
+  "skills": {
+    "skill1": {
+      "type": "타격",
+      "attribute": "질투"
+    },
+    "skill2": {
+      "type": "타격",
+      "attribute": "우울"
+    },
+    "skill3": {
+      "type": "타격",
+      "attribute": "색욕"
+    },
+    "special1": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special2": {
+      "type": "없음",
+      "attribute": "없음"
+    },
+    "special3": {
+      "type": "타격",
+      "attribute": "색욕"
+    }
+  },
+  "defense": {
+    "type": "반격",
+    "attribute": "색욕"
+  },
+  "specialDefense": {
+    "type": "없음",
+    "attribute": "없음"
+  },
+  "affiliation": [
+    "로보토미 본사",
+    "E.G.O 장비"
+  ],
+  "image_url": "/images/characters/로보토미_E.G.O적안_·_참회_료슈_1772466961.webp?v=1772466962"
+}

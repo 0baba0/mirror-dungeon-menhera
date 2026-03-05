@@ -1,29 +1,34 @@
 import os
-import time # 시간을 가져오기 위해 추가
-from PIL import Image # 이미지 변환을 위해 추가
-import json
 import time
+from PIL import Image
+import json
 import shutil
 import hashlib
 import requests
+import re
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 
 app = Flask(__name__)
 
 # --- 경로 설정 ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_SITE_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "web_site"))
+
 IMAGE_DIR = os.path.join(WEB_SITE_DIR, "public", "images", "characters")
 TEMP_DIR = os.path.join(WEB_SITE_DIR, "public", "images", "temp")
 JSON_DIR = os.path.join(WEB_SITE_DIR, "src", "content", "characters")
 
+GIFT_IMAGE_DIR = os.path.join(WEB_SITE_DIR, "public", "images", "gifts")
+GIFT_JSON_DIR = os.path.join(WEB_SITE_DIR, "src", "content", "gifts")
+
 os.makedirs(TEMP_DIR, exist_ok=True)
 os.makedirs(IMAGE_DIR, exist_ok=True)
 os.makedirs(JSON_DIR, exist_ok=True)
+os.makedirs(GIFT_IMAGE_DIR, exist_ok=True)
+os.makedirs(GIFT_JSON_DIR, exist_ok=True)
 
-# 파일 지문(MD5 Hash) 추출 헬퍼 함수
 def get_file_hash(filepath):
     hasher = hashlib.md5()
     with open(filepath, 'rb') as f:
@@ -31,115 +36,178 @@ def get_file_hash(filepath):
     return hasher.hexdigest()
 
 # ==========================================
-# 1. 공통 이미지 서빙 라우터
+# 0-1. 나무위키 파서 (인격용)
+# ==========================================
+def parse_namuwiki_text(raw_text):
+    data = {"skills": {}, "defense": {}, "specialDefense": {}, "affiliation": []}
+    clean_text = re.sub(r'\[\d+\]', '', raw_text)
+    
+    name_match = re.search(r'\[\s*(.+?)\s*\]\s*([^\n]+)', clean_text)
+    if name_match:
+        data['identityName'] = name_match.group(1).strip()
+        data['characterName'] = re.sub(r'["\'].*', '', name_match.group(2)).strip()
+        
+    star_count = clean_text.count('★')
+    if star_count > 0: data['grade'] = min(star_count, 3)
+    else:
+        grade_match = re.search(r'(\d)\s*성', clean_text)
+        data['grade'] = int(grade_match.group(1)) if grade_match else 1
+            
+    release_match = re.search(r'출시 시기\s*([\d\.]+)', clean_text)
+    if release_match: data['releaseDate'] = release_match.group(1).replace('.', '-').strip('-')
+        
+    affiliation_match = re.search(r'특성\s*키워드\s*([^\n]+)', clean_text)
+    if affiliation_match:
+        aff_str = affiliation_match.group(1).split('인격')[0].strip()
+        data['affiliation'] = [a.strip() for a in aff_str.split(',') if a.strip()]
+        
+    skills = re.findall(r'공격 유형.{0,20}?(참격|관통|타격).{0,20}?죄악 속성.{0,20}?(분노|색욕|나태|탐식|우울|오만|질투|없음)', clean_text, re.DOTALL)
+    for i in range(3):
+        if i < len(skills): data['skills'][f'skill{i+1}'] = {"type": skills[i][0], "attribute": skills[i][1]}
+    for i in range(3, 6):
+        if i < len(skills): data['skills'][f'special{i-2}'] = {"type": skills[i][0], "attribute": skills[i][1]}
+        
+    defense_matches = re.findall(r'수비 유형.{0,20}?(가드|방어|수비|회피|반격|강화\s*가드|강화\s*방어|강화\s*수비|강화\s*회피|강화\s*반격).{0,20}?죄악 속성.{0,20}?(분노|색욕|나태|탐식|우울|오만|질투|없음)', clean_text, re.DOTALL)
+    if len(defense_matches) > 0:
+        dt1 = defense_matches[0][0].replace(" ", "")
+        if dt1 in ["방어", "수비"]: dt1 = "가드"
+        elif dt1 in ["강화가드", "강화수비"]: dt1 = "강화방어"
+        data['defense'] = {"type": dt1, "attribute": defense_matches[0][1]}
+    if len(defense_matches) > 1:
+        dt2 = defense_matches[1][0].replace(" ", "")
+        if dt2 in ["방어", "수비"]: dt2 = "가드"
+        elif dt2 in ["강화가드", "강화수비"]: dt2 = "강화방어"
+        data['specialDefense'] = {"type": dt2, "attribute": defense_matches[1][1]}
+
+    return data
+
+# ==========================================
+# 0-2. 나무위키 파서 (기프트 전용)
+# ==========================================
+def parse_gift_namuwiki_text(raw_text):
+    data = {"name": "", "tier": 1, "category": "범용", "materials": [], "special_keywords": [], "effect": "", "resonance_condition": "", "identity_condition": "", "target_condition": []}
+    
+    clean_text = raw_text.replace('\xa0', ' ').replace('\u200b', '')
+    lines = [line.strip() for line in clean_text.split('\n') if line.strip()]
+    if not lines: return data
+        
+    first_line = lines[0]
+    raw_name = re.sub(r'^[ⅠⅡⅢⅣⅤ]\s*', '', first_line)
+    data['name'] = re.sub(r'\[.*?\]', '', raw_name).strip()
+        
+    valid_categories = ['참격', '관통', '타격', '화상', '출혈', '진동', '파열', '침잠', '호흡', '충전', '범용']
+    if len(lines) > 1:
+        cat_candidate = re.sub(r'\[.*?\]', '', lines[1]).strip()
+        for vc in valid_categories:
+            if vc in cat_candidate:
+                data['category'] = vc
+                break
+        
+    effect_idx = -1
+    for i, line in enumerate(lines):
+        if line == '등급' and i + 1 < len(lines) and lines[i+1].isdigit():
+            data['tier'] = int(lines[i+1])
+            
+        if line.startswith('조합식') and i + 1 < len(lines):
+            mat_line = lines[i+1]
+            mats = [m.strip() for m in mat_line.split('+')]
+            cleaned_mats = [re.sub(r'중 택.*', '', m).strip() for m in mats]
+            data['materials'] = cleaned_mats
+            
+        if line == '효과':
+            effect_idx = i
+            break
+            
+    if effect_idx != -1:
+        data['effect'] = '\n'.join(lines[effect_idx+1:])
+        
+    return data
+
+@app.route('/api/parse_gift_text', methods=['POST'])
+def api_parse_gift_text():
+    raw_text = request.form.get('raw_text', '').strip()
+    if raw_text: return jsonify({"status": "success", "data": parse_gift_namuwiki_text(raw_text)})
+    return jsonify({"status": "error", "message": "텍스트를 입력해주세요."})
+
+# ==========================================
+# 1. 라우터
 # ==========================================
 @app.route('/images/<filename>')
-def serve_image(filename):
-    return send_from_directory(IMAGE_DIR, filename)
+def serve_image(filename): return send_from_directory(IMAGE_DIR, filename)
 
 @app.route('/temp_images/<filename>')
-def serve_temp_image(filename):
-    return send_from_directory(TEMP_DIR, filename)
+def serve_temp_image(filename): return send_from_directory(TEMP_DIR, filename)
+
+@app.route('/gifts/<filename>')
+def serve_gift_image(filename): return send_from_directory(GIFT_IMAGE_DIR, filename)
+
+@app.route('/api/parse_text', methods=['POST'])
+def api_parse_text():
+    raw_text = request.form.get('raw_text', '').strip()
+    if raw_text: return jsonify({"status": "success", "data": parse_namuwiki_text(raw_text)})
+    return jsonify({"status": "error", "message": "텍스트를 입력해주세요."})
 
 # ==========================================
-# 2. 도감 데이터 팩토리 (메인 화면)
+# 2. [인격] 도감 데이터 팩토리
 # ==========================================
 @app.route('/')
 def index():
-    # .webp 파일들도 팩토리 화면에 띄웁니다.
-    images = sorted([f for f in os.listdir(IMAGE_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))])
-    
-    if 'page' not in request.args:
-        target_page = len(images) 
-        for i, img in enumerate(images):
-            char_id = os.path.splitext(img)[0]
-            if not os.path.exists(os.path.join(JSON_DIR, f"{char_id}.json")):
-                target_page = i
-                break
-        return redirect(url_for('index', page=target_page))
-
-    page_str = request.args.get('page', '0')
-    page = int(page_str) if page_str.isdigit() else 0
-    if page < 0: page = 0
-    
-    search_list = []
-    for i, img in enumerate(images):
+    valid_extensions = ('.png', '.jpg', '.jpeg', '.webp')
+    all_images = sorted([f for f in os.listdir(IMAGE_DIR) if f.lower().endswith(valid_extensions)])
+    image_data_list = []
+    for img in all_images:
         char_id = os.path.splitext(img)[0]
         json_path = os.path.join(JSON_DIR, f"{char_id}.json")
-        if os.path.exists(json_path):
+        has_data = os.path.exists(json_path)
+        existing_data = {}
+        display_name = ""
+        if has_data:
             with open(json_path, 'r', encoding='utf-8') as f:
-                j_data = json.load(f)
-                display_name = f"[{j_data.get('identityName', '이름없음')}] {j_data.get('characterName', '')}"
-        else:
-            display_name = "(미입력 데이터)"
-        search_list.append({"page": i, "name": display_name})
-
-    if page >= len(images):
-        return f"""
-        <div style="font-family:sans-serif; background:#121212; color:#fff; padding:3rem; text-align:center;">
-            <h1 style="color:#eab308;">🎉 총 {len(images)}개의 데이터 작업이 모두 끝났습니다!</h1>
-            <p>빈틈없이 완벽하게 도감이 채워졌습니다.</p>
-            <br>
-            <a href="/?page=0" style="color:#fff; text-decoration:none; padding:1rem; background:#444; border-radius:4px; margin-right:1rem;">1번부터 다시 검토하기</a>
-            <a href="/scraper" style="color:#000; text-decoration:none; padding:1rem; background:#eab308; border-radius:4px;">새 이미지 수집하러 가기 ➔</a>
-        </div>
-        """
-        
-    current_image = images[page]
-    char_id = os.path.splitext(current_image)[0]
-    
-    json_path = os.path.join(JSON_DIR, f"{char_id}.json")
-    existing_data = {}
-    if os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            existing_data = json.load(f)
-            
-    return render_template('index.html', image=current_image, char_id=char_id, page=page, total=len(images), data=existing_data, search_list=search_list)
+                existing_data = json.load(f)
+                display_name = f"[{existing_data.get('identityName', '이름없음')}] {existing_data.get('characterName', '')}"
+        image_data_list.append({"filename": img, "char_id": char_id, "has_data": has_data, "display_name": display_name, "json_data": existing_data})
+    return render_template('index.html', images=image_data_list)
 
 @app.route('/save', methods=['POST'])
 def save():
-    char_id = request.form['char_id']
-    page = int(request.form['page'])
+    old_char_id = request.form['char_id']
     img_filename = request.form['img_filename']
-    
-    # 🚀 --- [안전한 이미지 변환 및 캐시 꼬리표 로직] --- 🚀
-    IMAGE_DIR = '../web_site/public/images/characters' 
-    old_filepath = os.path.join(IMAGE_DIR, img_filename)
-    
-    # 이름은 무조건 원본과 똑같이 유지합니다! (예: 파우스트.webp) - 데이터 증발 방지
-    base_name = os.path.splitext(img_filename)[0]
-    final_filename = f"{base_name}.webp"
-    new_filepath = os.path.join(IMAGE_DIR, final_filename)
+    identityName = request.form['identityName'].strip()
+    characterName = request.form['characterName'].strip()
 
-    if os.path.exists(old_filepath) and not img_filename.lower().endswith('.webp'):
+    safe_identity = re.sub(r'[\\/*?:"<>|]', "", identityName).replace(" ", "_")
+    safe_character = re.sub(r'[\\/*?:"<>|]', "", characterName).replace(" ", "_")
+    new_char_id = f"{safe_identity}_{safe_character}_{int(time.time())}"
+
+    old_img_path = os.path.join(IMAGE_DIR, img_filename)
+    new_img_filename = f"{new_char_id}.webp"
+    new_img_path = os.path.join(IMAGE_DIR, new_img_filename)
+
+    if os.path.exists(old_img_path):
         try:
-            img = Image.open(old_filepath)
-            img.save(new_filepath, 'webp', quality=85)
-            os.remove(old_filepath)
-            print(f"✅ 이미지 압축 완료: {img_filename} ➔ {final_filename}")
-        except Exception as e:
-            print(f"❌ 변환 실패: {e}")
-            final_filename = img_filename
+            img = Image.open(old_img_path)
+            img.save(new_img_path, 'webp', quality=85)
+            if old_img_path != new_img_path: os.remove(old_img_path)
+        except:
+            ext = os.path.splitext(img_filename)[1]
+            new_img_filename = f"{new_char_id}{ext}"
+            new_img_path = os.path.join(IMAGE_DIR, new_img_filename)
+            if old_img_path != new_img_path: shutil.move(old_img_path, new_img_path)
+    else: new_img_filename = img_filename
 
-    # 브라우저를 속이기 위한 꼬리표(쿼리 스트링)를 파일 이름이 아닌 URL 문자열 끝에만 살짝 붙입니다!
-    timestamp = int(time.time())
-    cache_busting_url = f"/images/characters/{final_filename}?v={timestamp}"
-    # 🚀 --- [로직 끝] --- 🚀
+    old_json_path = os.path.join(JSON_DIR, f"{old_char_id}.json")
+    new_json_path = os.path.join(JSON_DIR, f"{new_char_id}.json")
+    if old_char_id != new_char_id and os.path.exists(old_json_path): os.remove(old_json_path)
 
     affiliation_list = [a.strip() for a in request.form['affiliation'].split(',') if a.strip()]
     checked_keywords = request.form.getlist('keywords_check')
-    manual_keywords_str = request.form.get('manual_keywords', '')
-    manual_keywords = [k.strip() for k in manual_keywords_str.split(',') if k.strip()]
+    manual_keywords = [k.strip() for k in request.form.get('manual_keywords', '').split(',') if k.strip()]
     final_keywords = list(set(checked_keywords + manual_keywords))
     
     character_data = {
-        "id": char_id,
-        "characterName": request.form['characterName'],
-        "identityName": request.form['identityName'],
-        "isDefault": request.form.get('isDefault') == 'on',
-        "grade": int(request.form['grade']),
-        "releaseDate": request.form['releaseDate'],
-        "imagePosition": request.form.get('imagePosition', 'center'),
+        "id": new_char_id, "characterName": characterName, "identityName": identityName,
+        "isDefault": request.form.get('isDefault') == 'on', "grade": int(request.form['grade']),
+        "releaseDate": request.form['releaseDate'], "imagePosition": request.form.get('imagePosition', 'center'),
         "keywords": final_keywords,
         "skills": {
             "skill1": {"type": request.form['skill1_type'], "attribute": request.form['skill1_attr']},
@@ -149,157 +217,222 @@ def save():
             "special2": {"type": request.form['special2_type'], "attribute": request.form['special2_attr']},
             "special3": {"type": request.form['special3_type'], "attribute": request.form['special3_attr']},
         },
-        "defense": {"type": request.form['defense_type'], "attribute": request.form['defense_attr']},
+        "defense": {"type": request.form.get('defense_type', '가드'), "attribute": request.form.get('defense_attr', '없음')},
+        "specialDefense": {"type": request.form.get('sp_def_type', '없음'), "attribute": request.form.get('sp_def_attr', '없음')},
         "affiliation": affiliation_list if affiliation_list else ["림버스 컴퍼니"],
-        
-        # 🚀 JSON 데이터 안의 주소에만 꼬리표를 달아서 브라우저 캐시를 무력화합니다!
-        "image_url": cache_busting_url
+        "image_url": f"/images/characters/{new_img_filename}?v={int(time.time())}"
     }
-    
-    json_path = os.path.join(JSON_DIR, f"{char_id}.json")
-    with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(character_data, f, ensure_ascii=False, indent=2)
-        
-    return redirect(url_for('index', page=page+1))
+    with open(new_json_path, 'w', encoding='utf-8') as f: json.dump(character_data, f, ensure_ascii=False, indent=2)
+    return redirect(url_for('index'))
 
 @app.route('/delete', methods=['POST'])
 def delete_image():
-    # 현재 이미지와 관련 JSON 파일을 완전히 삭제하는 기능
     img_filename = request.form['img_filename']
     char_id = request.form['char_id']
-    page = int(request.form['page'])
-    
-    img_path = os.path.join(IMAGE_DIR, img_filename)
-    json_path = os.path.join(JSON_DIR, f"{char_id}.json")
-    
-    if os.path.exists(img_path): os.remove(img_path)
-    if os.path.exists(json_path): os.remove(json_path)
-    
-    # 이미지가 삭제되면 뒤에 있던 이미지가 현재 인덱스(page)로 당겨오므로 같은 page로 리다이렉트
-    return redirect(url_for('index', page=page))
+    if os.path.exists(os.path.join(IMAGE_DIR, img_filename)): os.remove(os.path.join(IMAGE_DIR, img_filename))
+    if os.path.exists(os.path.join(JSON_DIR, f"{char_id}.json")): os.remove(os.path.join(JSON_DIR, f"{char_id}.json"))
+    return redirect(url_for('index'))
 
+@app.route('/batch_convert', methods=['POST'])
+def batch_convert():
+    converted_count = 0
+    for idx, j_file in enumerate(os.listdir(JSON_DIR)):
+        if not j_file.endswith('.json'): continue
+        old_char_id = os.path.splitext(j_file)[0]
+        old_json_path = os.path.join(JSON_DIR, j_file)
+        with open(old_json_path, 'r', encoding='utf-8') as f: data = json.load(f)
+        safe_id = re.sub(r'[\\/*?:"<>|]', "", data.get('identityName', 'Unknown')).replace(" ", "_")
+        safe_char = re.sub(r'[\\/*?:"<>|]', "", data.get('characterName', 'Unknown')).replace(" ", "_")
+        if safe_id in old_char_id and safe_char in old_char_id: continue
+        timestamp = int(time.time()) + idx 
+        new_char_id = f"{safe_id}_{safe_char}_{timestamp}"
+        old_img_filename = None
+        for ext in ['.webp', '.png', '.jpg', '.jpeg']:
+            if os.path.exists(os.path.join(IMAGE_DIR, f"{old_char_id}{ext}")):
+                old_img_filename = f"{old_char_id}{ext}"; break
+        if not old_img_filename: continue
+        old_img_path = os.path.join(IMAGE_DIR, old_img_filename)
+        new_img_filename = f"{new_char_id}.webp"
+        new_img_path = os.path.join(IMAGE_DIR, new_img_filename)
+        try:
+            img = Image.open(old_img_path)
+            img.save(new_img_path, 'webp', quality=85)
+            if old_img_path != new_img_path: os.remove(old_img_path)
+        except:
+            ext = os.path.splitext(old_img_filename)[1]
+            new_img_filename = f"{new_char_id}{ext}"
+            new_img_path = os.path.join(IMAGE_DIR, new_img_filename)
+            shutil.move(old_img_path, new_img_path)
+        data['id'] = new_char_id
+        data['image_url'] = f"/images/characters/{new_img_filename}?v={timestamp}"
+        with open(os.path.join(JSON_DIR, f"{new_char_id}.json"), 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        os.remove(old_json_path)
+        converted_count += 1
+    return jsonify({"status": "success", "message": f"🎉 총 {converted_count}개의 데이터 일괄 변경 완료!"})
 
 # ==========================================
-# 3. 스테이징 크롤러 (이미지 수집기)
+# 3. 🎁 기프트 데이터 팩토리
+# ==========================================
+@app.route('/gift_factory')
+def gift_factory_ui():
+    valid_extensions = ('.png', '.jpg', '.jpeg', '.webp')
+    all_images = sorted([f for f in os.listdir(GIFT_IMAGE_DIR) if f.lower().endswith(valid_extensions)])
+    
+    gift_data_list = []
+    for img in all_images:
+        gift_id = os.path.splitext(img)[0]
+        json_path = os.path.join(GIFT_JSON_DIR, f"{gift_id}.json")
+        has_data = os.path.exists(json_path)
+        existing_data = {}
+        display_name = ""
+        if has_data:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                existing_data = json.load(f)
+                display_name = existing_data.get('name', '이름없음')
+        gift_data_list.append({"filename": img, "gift_id": gift_id, "has_data": has_data, "display_name": display_name, "json_data": existing_data})
+
+    unique_affiliations = set()
+    unique_keywords = set()
+    common_kws = ['화상', '출혈', '진동', '파열', '침잠', '호흡', '충전']
+
+    if os.path.exists(JSON_DIR):
+        for f_name in os.listdir(JSON_DIR):
+            if f_name.endswith('.json'):
+                try:
+                    with open(os.path.join(JSON_DIR, f_name), 'r', encoding='utf-8') as f:
+                        c_data = json.load(f)
+                        for aff in c_data.get('affiliation', []):
+                            if aff.strip(): unique_affiliations.add(aff.strip())
+                        for kw in c_data.get('keywords', []):
+                            if kw.strip() and kw.strip() not in common_kws:
+                                unique_keywords.add(kw.strip())
+                except: pass
+
+    existing_gift_names = set()
+    if os.path.exists(GIFT_JSON_DIR):
+        for f_name in os.listdir(GIFT_JSON_DIR):
+            if f_name.endswith('.json'):
+                try:
+                    with open(os.path.join(GIFT_JSON_DIR, f_name), 'r', encoding='utf-8') as f:
+                        g_data = json.load(f)
+                        if g_data.get('name'):
+                            existing_gift_names.add(g_data['name'].strip())
+                except: pass
+
+    return render_template('gift_factory.html', images=gift_data_list, rec_affiliations=sorted(list(unique_affiliations)), rec_keywords=sorted(list(unique_keywords)), rec_gifts=sorted(list(existing_gift_names)))
+
+@app.route('/save_gift', methods=['POST'])
+def save_gift():
+    old_gift_id = request.form['gift_id']
+    img_filename = request.form['img_filename']
+    gift_name = request.form['name'].strip()
+    
+    safe_name = re.sub(r'[\\/*?:"<>|]', "", gift_name).replace(" ", "_")
+    timestamp = int(time.time())
+    new_gift_id = f"gift_{safe_name}_{timestamp}"
+    
+    old_img_path = os.path.join(GIFT_IMAGE_DIR, img_filename)
+    new_img_filename = f"{new_gift_id}.webp"
+    new_img_path = os.path.join(GIFT_IMAGE_DIR, new_img_filename)
+
+    if os.path.exists(old_img_path):
+        try:
+            img = Image.open(old_img_path)
+            img.save(new_img_path, 'webp', quality=85)
+            if old_img_path != new_img_path: os.remove(old_img_path)
+        except Exception:
+            ext = os.path.splitext(img_filename)[1]
+            new_img_filename = f"{new_gift_id}{ext}"
+            new_img_path = os.path.join(GIFT_IMAGE_DIR, new_img_filename)
+            shutil.move(old_img_path, new_img_path)
+
+    old_json_path = os.path.join(GIFT_JSON_DIR, f"{old_gift_id}.json")
+    if old_gift_id != new_gift_id and os.path.exists(old_json_path):
+        os.remove(old_json_path)
+
+    id_cond_list = [k.strip() for k in request.form.get('identity_condition', '').split(',') if k.strip()]
+    target_cond_list = [k.strip() for k in request.form.get('target_condition', '').split(',') if k.strip()] # 🚀 신규 추가
+    sp_kw_list = [k.strip() for k in request.form.get('special_keywords', '').split(',') if k.strip()]
+    materials_list = [m.strip() for m in request.form.get('materials', '').split(',') if m.strip()]
+
+    is_ego = request.form.get('is_ego_gift') == 'on'
+
+    gift_data = {
+        "id": new_gift_id,
+        "name": gift_name,
+        "tier": int(request.form.get('tier', 1)),
+        "category": request.form.get('category', '범용'),
+        "special_keywords": sp_kw_list,
+        "materials": materials_list,
+        "resonance_condition": request.form.get('resonance_condition', '').strip(), 
+        "identity_condition": id_cond_list,
+        "target_condition": target_cond_list, # 🚀 적용 대상 및 편성 순서 추가
+        "condition_dependency": request.form.get('condition_dependency', 'none'),
+        "is_ego_gift": is_ego,
+        "effect": request.form.get('effect', '').strip(),
+        "image_url": f"/images/gifts/{new_img_filename}?v={timestamp}"
+    }
+    
+    new_json_path = os.path.join(GIFT_JSON_DIR, f"{new_gift_id}.json")
+    with open(new_json_path, 'w', encoding='utf-8') as f:
+        json.dump(gift_data, f, ensure_ascii=False, indent=2)
+        
+    return redirect(url_for('gift_factory_ui'))
+
+@app.route('/delete_gift', methods=['POST'])
+def delete_gift():
+    img_filename = request.form['img_filename']
+    gift_id = request.form['gift_id']
+    if os.path.exists(os.path.join(GIFT_IMAGE_DIR, img_filename)): os.remove(os.path.join(GIFT_IMAGE_DIR, img_filename))
+    if os.path.exists(os.path.join(GIFT_JSON_DIR, f"{gift_id}.json")): os.remove(os.path.join(GIFT_JSON_DIR, f"{gift_id}.json"))
+    return redirect(url_for('gift_factory_ui'))
+
+# ==========================================
+# 4. 스테이징 크롤러
 # ==========================================
 @app.route('/scraper')
-def scraper_ui():
-    return render_template('scraper.html')
+def scraper_ui(): return render_template('scraper.html')
 
 @app.route('/run_scraper', methods=['POST'])
 def run_scraper():
     target_url = request.form['url']
-    prefix = request.form.get('prefix', '').strip()
-    if not prefix:
-        prefix = "auto_img"
-        
+    prefix = request.form.get('prefix', '').strip() or "auto_img"
     headers = {'User-Agent': 'Mozilla/5.0'}
-    
-    # 임시 폴더 비우기
-    for f in os.listdir(TEMP_DIR):
-        os.remove(os.path.join(TEMP_DIR, f))
-        
-    # 기존 본진 이미지 해시(지문) 매핑 저장
-    existing_hashes = {}
-    for f in os.listdir(IMAGE_DIR):
-        if f.lower().endswith(('.jpg', '.jpeg', '.png')):
-            existing_hashes[get_file_hash(os.path.join(IMAGE_DIR, f))] = f
-            
-    scraped_files = []
-    duplicated_files = [] # 중복 파일 목록
-    
+    for f in os.listdir(TEMP_DIR): os.remove(os.path.join(TEMP_DIR, f))
+    existing_hashes = {get_file_hash(os.path.join(IMAGE_DIR, f)): f for f in os.listdir(IMAGE_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))}
+    scraped_files, duplicated_files = [], []
     try:
-        response = requests.get(target_url, headers=headers, timeout=10)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        img_tags = soup.find_all('img')
-        
-        for idx, img in enumerate(img_tags):
-            img_url = img.get('src') or img.get('data-src')
-            if not img_url: continue
-            img_url = urljoin(target_url, img_url)
-            
-            # 1차 필터링
-            if img_url.endswith(('.gif', '.svg')) or 'icon' in img_url.lower() or 'logo' in img_url.lower():
-                continue
-
+        soup = BeautifulSoup(requests.get(target_url, headers=headers, timeout=10).text, 'html.parser')
+        for idx, img in enumerate(soup.find_all('img')):
+            img_url = urljoin(target_url, img.get('src') or img.get('data-src'))
+            if not img_url or img_url.endswith(('.gif', '.svg')) or 'icon' in img_url.lower() or 'logo' in img_url.lower(): continue
             try:
                 img_data = requests.get(img_url, headers=headers, timeout=5).content
-                if len(img_data) < 10240: 
-                    continue
-                    
+                if len(img_data) < 10240: continue
                 filename = f"{prefix}_{int(time.time())}_{idx}.jpg"
                 filepath = os.path.join(TEMP_DIR, filename)
-                
-                with open(filepath, 'wb') as f:
-                    f.write(img_data)
-                    
-                # 3차 필터링: 중복 검사
+                with open(filepath, 'wb') as f: f.write(img_data)
                 new_hash = get_file_hash(filepath)
-                if new_hash in existing_hashes:
-                    # 중복인 경우 화면에 보여주기 위해 정보 추가
-                    duplicated_files.append({
-                        'temp_name': filename,
-                        'original_name': existing_hashes[new_hash]
-                    })
-                else:
-                    scraped_files.append(filename)
-                    
-            except Exception:
-                pass 
-                
+                if new_hash in existing_hashes: duplicated_files.append({'temp_name': filename, 'original_name': existing_hashes[new_hash]})
+                else: scraped_files.append(filename)
+            except: pass 
         return render_template('select_images.html', images=scraped_files, duplicates=duplicated_files, target_url=target_url)
-        
-    except Exception as e:
-        return f"<h1 style='color:red;'>오류 발생</h1><p>{str(e)}</p><a href='/scraper'>돌아가기</a>"
+    except Exception as e: return f"<h1 style='color:red;'>오류</h1><p>{str(e)}</p><a href='/scraper'>돌아가기</a>"
 
 @app.route('/save_selected_images', methods=['POST'])
 def save_selected_images():
-    selected_images = request.form.getlist('selected_images')
-    saved_count = 0
-    
-    for filename in selected_images:
-        temp_path = os.path.join(TEMP_DIR, filename)
-        final_path = os.path.join(IMAGE_DIR, filename)
-        
-        if os.path.exists(temp_path):
-            shutil.move(temp_path, final_path)
-            saved_count += 1
-            
-    for f in os.listdir(TEMP_DIR):
-        os.remove(os.path.join(TEMP_DIR, f))
-        
-    return f"""
-    <div style="font-family:sans-serif; background:#121212; color:#fff; padding:3rem; text-align:center;">
-        <h1 style="color:#eab308;">✅ {saved_count}개의 이미지 최종 저장 완료!</h1>
-        <p>선택하지 않은 찌꺼기 파일들은 완벽하게 삭제되었습니다.</p>
-        <br>
-        <a href="/scraper" style="color:#fff; text-decoration:none; padding:1rem; background:#444; border-radius:4px; margin-right:1rem;">다른 사이트 더 긁어오기</a>
-        <a href="/" style="color:#000; text-decoration:none; padding:1rem; background:#eab308; border-radius:4px;">도감 데이터 입력하러 가기 ➔</a>
-    </div>
-    """
+    for filename in request.form.getlist('selected_images'):
+        if os.path.exists(os.path.join(TEMP_DIR, filename)): shutil.move(os.path.join(TEMP_DIR, filename), os.path.join(IMAGE_DIR, filename))
+    for f in os.listdir(TEMP_DIR): os.remove(os.path.join(TEMP_DIR, f))
+    return redirect(url_for('index'))
     
 @app.route('/cleanup')
 def cleanup_orphans():
-    # 이제 .webp도 완벽하게 인식합니다.
     valid_ids = [os.path.splitext(f)[0] for f in os.listdir(IMAGE_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
-    cleaned_count = 0
     for j_file in os.listdir(JSON_DIR):
-        if j_file.endswith('.json'):
-            char_id = os.path.splitext(j_file)[0]
-            # 파일 이름이 1:1로 일치하지 않으면 삭제 (이제 짝꿍이 완벽히 맞으므로 정상 데이터는 절대 안 지워집니다)
-            if char_id not in valid_ids:
-                os.remove(os.path.join(JSON_DIR, j_file))
-                cleaned_count += 1
-                
-    return f"""
-    <div style="font-family:sans-serif; background:#121212; color:#fff; padding:3rem; text-align:center;">
-        <h1 style="color:#eab308;">🧹 데이터 검수 및 청소 완료!</h1>
-        <p>이미지가 없어서 버려진 '주인 잃은 JSON 데이터' <b>{cleaned_count}개</b>를 완벽하게 삭제했습니다.</p>
-        <br>
-        <a href="/" style="color:#000; text-decoration:none; padding:1rem; background:#eab308; border-radius:4px;">메인으로 돌아가기 ➔</a>
-    </div>
-    """
+        if j_file.endswith('.json') and os.path.splitext(j_file)[0] not in valid_ids: os.remove(os.path.join(JSON_DIR, j_file))
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    print("🚀 로컬 데이터 관리자 서버가 켜졌습니다! http://localhost:5000 으로 접속하세요.")
     app.run(debug=True, port=5000)
